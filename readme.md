@@ -19,6 +19,8 @@ kafka-topics  --bootstrap-server=broker:29092  --list
 
 exit
 
+# https://docs.confluent.io/current/kafka-rest/quickstart.html
+# https://docs.confluent.io/current/kafka-rest/api.html
 docker-compose exec rest-proxy bash
 
 curl -v -X POST -H "Content-Type: application/vnd.kafka.v2+json" \
