@@ -38,66 +38,15 @@ public class KafkotestApplication implements CommandLineRunner {
 		SpringApplication.run(KafkotestApplication.class, args);
 	}
 
-	@Autowired
-	private KafkaProperties kafkaProperties;
-
 	@Value("${tpd.topic-name}")
 	private String topicName;
 
 	@Autowired
 	private KafkaTemplate<String, Object> template;
 
-	@KafkaListener(topics = "${tpd.topic-name}", clientIdPrefix = "json",
-			containerFactory = "kafkaListenerContainerFactory")
-	public void listenAsObject(ConsumerRecord<String, PracticalAdvice> cr,
-							   @Payload PracticalAdvice payload) {
-		logger.info("Logger 1 [JSON] received key {}: Type [{}] | Payload: {} | Record: {}", cr.key(),
-				typeIdHeader(cr.headers()), payload, cr.toString());
-	}
-
-	private static String typeIdHeader(Headers headers) {
-		return StreamSupport.stream(headers.spliterator(), false)
-				.filter(header -> header.key().equals("__TypeId__"))
-				.findFirst().map(header -> new String(header.value())).orElse("N/A");
-	}
-
-	@Bean
-	public ConsumerFactory<String, Object> consumerFactory() {
-		final JsonDeserializer<Object> jsonDeserializer = new JsonDeserializer<>();
-		jsonDeserializer.addTrustedPackages("*");
-		return new DefaultKafkaConsumerFactory<>(
-				kafkaProperties.buildConsumerProperties(), new StringDeserializer(), jsonDeserializer
-		);
-	}
-
-	@Bean
-	public ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory() {
-		ConcurrentKafkaListenerContainerFactory<String, Object> factory =
-				new ConcurrentKafkaListenerContainerFactory<>();
-		factory.setConsumerFactory(consumerFactory());
-
-		return factory;
-	}
-
-	@Bean
-	public Map<String, Object> producerConfigs() {
-		Map<String, Object> props =
-				new HashMap<>(kafkaProperties.buildProducerProperties());
-		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
-				StringSerializer.class);
-		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
-				JsonSerializer.class);
-		return props;
-	}
-
-	@Bean
-	public ProducerFactory<String, Object> producerFactory() {
-		return new DefaultKafkaProducerFactory<>(producerConfigs());
-	}
-
-	@Bean
-	public KafkaTemplate<String, Object> kafkaTemplate() {
-		return new KafkaTemplate<>(producerFactory());
+	@KafkaListener(topics = "${tpd.topic-name}")
+	public void listenAsObject(ConsumerRecord<String, PracticalAdvice> cr, @Payload PracticalAdvice payload) {
+		logger.info("received: key {}: | Payload: {} | Record: {}", cr.key(), payload, cr.toString());
 	}
 
 	@Bean
@@ -106,13 +55,9 @@ public class KafkotestApplication implements CommandLineRunner {
 	}
 
 	@Override
-	public void run(String... args) throws Exception {
+	public void run(String... args) {
 		IntStream.range(0, 60)
-				.forEach(i -> this.template.send(topicName, String.valueOf(i),
-						new PracticalAdvice("A Practical Advice", i))
-				);
-//        latch.await(60, TimeUnit.SECONDS);
+				.forEach(i -> this.template.send(topicName, String.valueOf(i), new PracticalAdvice("A Practical Advice Number " + i, i)));
 		logger.info("All messages sent");
-
 	}
 }
