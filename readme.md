@@ -31,5 +31,9 @@ curl -v -X POST -H "Content-Type: application/vnd.kafka.v2+json" --data '{"topic
 
 curl -v -X GET -H "Accept: application/vnd.kafka.json.v2+json" \
       http://localhost:8082/consumers/advice_consumer/instances/advice_consumer_instance/records
+
+# get message without subscription
+# for this works you should set KAFKA_REST_ZOOKEEPER_CONNECT: 'zookeeper:2181' in docker-compose
+curl -v -H "Accept: application/vnd.kafka.json.v1+json" 'http://localhost:8082/topics/advice-topic/partitions/0/messages?offset=0'
 ```
 ![](.markdown/read_from_rest.png)
