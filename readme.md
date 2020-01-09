@@ -12,7 +12,6 @@ For further reference, please consider the following sections:
 docker-compose up -d
 docker-compose exec broker bash
 
-cd /usr/bin
 kafka-console-consumer --bootstrap-server=broker:29092   --topic advice-topic --offset=earliest --partition=0
 kafka-topics --zookeeper zookeeper:2181 --delete --topic advice-topic
 kafka-topics  --bootstrap-server=broker:29092  --list

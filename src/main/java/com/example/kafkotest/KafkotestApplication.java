@@ -34,7 +34,7 @@ public class KafkotestApplication implements CommandLineRunner {
 
 	private final int messagesCount = 1_000_000;
 
-	@KafkaListener(topics = "${tpd.topic-name}")
+	@KafkaListener(topics = "${tpd.topic-name}", clientIdPrefix = "json")
 	public void listenAsObject(ConsumerRecord<String, PracticalAdvice> cr, @Payload PracticalAdvice payload) {
 		if (cr.key().equals(String.valueOf(messagesCount-1))) {
 			logger.info("received: key {}: | Payload: {} | Record: {}", cr.key(), payload, cr.toString());
