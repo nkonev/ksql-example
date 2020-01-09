@@ -33,6 +33,7 @@ curl -v -X GET -H "Accept: application/vnd.kafka.json.v2+json" \
       http://localhost:8082/consumers/advice_consumer/instances/advice_consumer_instance/records
 
 # get message without subscription
+# https://docs.confluent.io/current/kafka-rest/api.html#get--topics-(string-topic_name)-partitions-(int-partition_id)-messages?offset=(int)[&count=(int)]
 # for this works you should set KAFKA_REST_ZOOKEEPER_CONNECT: 'zookeeper:2181' in docker-compose
 curl -v -H "Accept: application/vnd.kafka.json.v1+json" 'http://localhost:8082/topics/advice-topic/partitions/0/messages?offset=0'
 ```
