@@ -8,7 +8,6 @@ spring:
       properties:
         spring.json.trusted.packages: io.tpd.kafkaexample
     producer:
-      bootstrap-servers: localhost:9092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 #      value-deserializer: org.springframework.kafka.support.serializer.StringSerializer
