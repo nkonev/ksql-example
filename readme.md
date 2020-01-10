@@ -16,6 +16,8 @@ kafka-console-consumer --bootstrap-server=broker:29092   --topic advice-topic --
 kafka-topics --zookeeper zookeeper:2181 --delete --topic advice-topic
 kafka-topics  --bootstrap-server=broker:29092  --list
 
+kafka-console-consumer --bootstrap-server broker:29092 --topic advice-topic --max-messages 2 --consumer-property auto.offset.reset=earliest --offset 0 --partition 0
+
 exit
 
 # https://docs.confluent.io/current/kafka-rest/quickstart.html
