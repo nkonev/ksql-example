@@ -16,7 +16,9 @@ kafka-console-consumer --bootstrap-server=broker:29092   --topic advice-topic --
 kafka-topics --zookeeper zookeeper:2181 --delete --topic advice-topic
 kafka-topics  --bootstrap-server=broker:29092  --list
 
-kafka-console-consumer --bootstrap-server broker:29092 --topic advice-topic --max-messages 2 --consumer-property auto.offset.reset=earliest --offset 0 --partition 0
+kafka-console-consumer --bootstrap-server broker:29092 --topic advice-topic --max-messages 2 --offset 0 --partition 0
+# step by two message with commit offset
+kafka-console-consumer --bootstrap-server broker:9092 --topic advice-topic --max-messages 2 --from-beginning --consumer-property group.id=ololoNikita
 
 exit
 
