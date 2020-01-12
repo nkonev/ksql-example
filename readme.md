@@ -9,6 +9,8 @@ For further reference, please consider the following sections:
 
 # Playing with kafka
 ```bash
+docker-compose logs broker | grep retention
+
 docker-compose up -d
 docker-compose exec broker bash
 
