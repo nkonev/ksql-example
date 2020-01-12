@@ -16,8 +16,13 @@ kafka-console-consumer --bootstrap-server=broker:29092   --topic advice-topic --
 kafka-topics --zookeeper zookeeper:2181 --delete --topic advice-topic
 kafka-topics  --bootstrap-server=broker:29092  --list
 kafka-topics --bootstrap-server=broker:29092  --describe --topic advice-topic
-# possible see overrides https://stackoverflow.com/a/42399549/4655234
+
+# Get retention
+## possible see overrides https://stackoverflow.com/a/42399549/4655234
 kafka-topics --bootstrap-server=broker:29092 --describe --topics-with-overrides
+kafka-configs --zookeeper zookeeper:2181  --describe --entity-type topics
+kafka-configs --zookeeper zookeeper:2181  --describe --entity-type brokers
+
 kafka-console-consumer --bootstrap-server broker:29092 --topic advice-topic --max-messages 2 --offset 0 --partition 0
 # step by two message with commit offset
 kafka-console-consumer --bootstrap-server broker:9092 --topic advice-topic --max-messages 2 --from-beginning --consumer-property group.id=ololoNikita
