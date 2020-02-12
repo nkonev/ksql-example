@@ -36,7 +36,7 @@ public class KafkotestApplication implements CommandLineRunner {
 
 	@KafkaListener(topics = "${tpd.topic-name}", clientIdPrefix = "json")
 	public void listenAsObject(ConsumerRecord<String, PracticalAdvice> cr, @Payload PracticalAdvice payload) {
-		if (cr.key().equals(String.valueOf(messagesCount-1))) {
+		if (cr.key().equals("0") || cr.key().equals(String.valueOf(messagesCount-1))) {
 			logger.info("received: key {}: | Payload: {} | Record: {}", cr.key(), payload, cr.toString());
 		}
 	}
@@ -48,8 +48,7 @@ public class KafkotestApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) {
-		IntStream.range(0, messagesCount)
-				.forEach(i -> this.template.send(topicName, String.valueOf(i), new PracticalAdvice("A Practical Advice Number " + i, i)));
-		logger.info("All messages sent");
+		//IntStream.range(0, messagesCount).forEach(i -> this.template.send(topicName, String.valueOf(i), new PracticalAdvice("A Practical Advice Number " + i, i)));
+		//logger.info("All messages sent");
 	}
 }

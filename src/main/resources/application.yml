@@ -1,3 +1,5 @@
+#logging.level.org.springframework.kafka.listener: DEBUG
+
 spring:
   kafka:
     consumer:
@@ -14,6 +16,8 @@ spring:
     # change this property if you are using your own
     # Kafka cluster or your Docker IP is different
     bootstrap-servers: localhost:9092
+    listener:
+      ack-mode: manual
 
 tpd:
   topic-name: advice-topic
