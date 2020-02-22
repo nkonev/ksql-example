@@ -2,46 +2,86 @@
 # ~/javaWorkspace/examples/cp-all-in-one (5.3.1-post)
 version: '2'
 services:
-  zookeeper:
+  zookeeper-1:
     image: confluentinc/cp-zookeeper:5.3.1
-    hostname: zookeeper
-    container_name: zookeeper
-    ports:
-      - "2181:2181"
     environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_CLIENT_PORT: 22181
       ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: localhost:22888:23888;localhost:32888:33888;localhost:42888:43888
+    network_mode: host
+    extra_hosts:
+      - "moby:127.0.0.1"
 
-  broker:
+  zookeeper-2:
+    image: confluentinc/cp-zookeeper:5.3.1
+    environment:
+      ZOOKEEPER_SERVER_ID: 2
+      ZOOKEEPER_CLIENT_PORT: 32181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: localhost:22888:23888;localhost:32888:33888;localhost:42888:43888
+    network_mode: host
+    extra_hosts:
+      - "moby:127.0.0.1"
+
+  zookeeper-3:
+    image: confluentinc/cp-zookeeper:5.3.1
+    environment:
+      ZOOKEEPER_SERVER_ID: 3
+      ZOOKEEPER_CLIENT_PORT: 42181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: localhost:22888:23888;localhost:32888:33888;localhost:42888:43888
+    network_mode: host
+    extra_hosts:
+      - "moby:127.0.0.1"
+
+  kafka-1:
     image: confluentinc/cp-enterprise-kafka:5.3.1
-    hostname: broker
-    container_name: broker
+    network_mode: host
     depends_on:
-      - zookeeper
-    ports:
-      - "9092:9092"
+      - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_ZOOKEEPER_CONNECT: localhost:22181,localhost:32181,localhost:42181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:19092
       KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: 'false'
-      CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
+    extra_hosts:
+      - "moby:127.0.0.1"
 
-  rest-proxy:
-    image: confluentinc/cp-kafka-rest:5.3.1
+  kafka-2:
+    image: confluentinc/cp-enterprise-kafka:5.3.1
+    network_mode: host
     depends_on:
-      - zookeeper
-      - broker
-    ports:
-      - 8082:8082
-    hostname: rest-proxy
-    container_name: rest-proxy
+      - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
     environment:
-      KAFKA_REST_HOST_NAME: rest-proxy
-      KAFKA_REST_BOOTSTRAP_SERVERS: 'broker:29092'
-      KAFKA_REST_LISTENERS: "http://0.0.0.0:8082"
-      # https://docs.confluent.io/current/kafka-rest/config.html
-      KAFKA_REST_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: localhost:22181,localhost:32181,localhost:42181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:29092
+      KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: 'false'
+    extra_hosts:
+      - "moby:127.0.0.1"
+
+  kafka-3:
+    image: confluentinc/cp-enterprise-kafka:5.3.1
+    network_mode: host
+    depends_on:
+      - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_ZOOKEEPER_CONNECT: localhost:22181,localhost:32181,localhost:42181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:39092
+      KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: 'false'
+    extra_hosts:
+      - "moby:127.0.0.1"

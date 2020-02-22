@@ -51,3 +51,10 @@ curl -v -X GET -H "Accept: application/vnd.kafka.json.v2+json" \
 curl -v -H "Accept: application/vnd.kafka.json.v1+json" 'http://localhost:8082/topics/advice-topic/partitions/0/messages?offset=0'
 ```
 ![](.markdown/read_from_rest.png)
+
+# Useful links
+* https://www.cloudkarafka.com/blog/2019-04-10-apache-kafka-idempotent-producer-avoiding-message-duplication.html
+* https://www.confluent.io/blog/spring-for-apache-kafka-deep-dive-part-1-error-handling-message-conversion-transaction-support/
+* https://kafka.apache.org/documentation/#basic_ops_increase_replication_factor
+* https://docs.spring.io/spring-kafka/reference/html/#transactions
+* https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#common-application-properties

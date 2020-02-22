@@ -8,13 +8,33 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
+        # https://kafka.apache.org/documentation/#configuration
         spring.json.trusted.packages: io.tpd.kafkaexample
+        isolation.level: read_committed
+        enable.auto.commit: false
+        # increase batch consuming: set max.poll.records
+        max.poll.records: 8000
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-    bootstrap-servers: localhost:9092
-#    listener:
-#      ack-mode: manual
+      transaction-id-prefix: ${spring.cloud.client.ip-address}_tx.
+      properties:
+        # for ordering
+        max.in.flight.requests.per.connection: 1
+        enable.idempotence: true
+        # retries: 10000
+        delivery.timeout.ms: 300000 # 5 minutes
+        retry.backoff.ms: 1000
+        acks: all
+        #transactional.id: producer-1
+    bootstrap-servers: localhost:19092
+    # https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#common-application-properties
+    listener:
+      # increase batch consuming: set type=batch
+      type: batch
+      ack-mode: batch
+      # increase batch consuming: set poll-timeout
+      poll-timeout: 10s
 
 tpd:
   topic-name: advice-topic

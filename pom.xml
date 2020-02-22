@@ -47,6 +47,14 @@
 			<artifactId>spring-kafka-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- to be able to get host ip in placeholder -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-commons</artifactId>
+			<version>2.2.1.RELEASE</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

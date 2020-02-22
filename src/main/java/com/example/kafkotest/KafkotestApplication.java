@@ -14,8 +14,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.*;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.stream.IntStream;
 
 // https://thepracticaldeveloper.com/2018/11/24/spring-boot-kafka-config/
@@ -37,21 +39,26 @@ public class KafkotestApplication implements CommandLineRunner {
 	private final int messagesCount = 1_000_000;
 
 	@KafkaListener(topics = "${tpd.topic-name}", clientIdPrefix = "json")
-	public void listenAsObject(ConsumerRecord<String, PracticalAdvice> cr, @Payload PracticalAdvice payload) {
-		if (cr.key().equals("0") || cr.key().equals(String.valueOf(messagesCount-1))) {
-			logger.info("received: key {}: | Payload: {} | Record: {}", cr.key(), payload, cr.toString());
+	public void listenAsObject(
+			@Payload List<PracticalAdvice> payloads
+			//@Payload PracticalAdvice payload
+	) {
+		for(PracticalAdvice payload: payloads) {
+			if (payload.getIdentifier()%10000 == 0 || payload.getIdentifier() == messagesCount-1) {
+				logger.info("received:  Payload: {}", payload);
+			}
 		}
 	}
 
 	@Bean
 	public NewTopic adviceTopic() {
-		return new NewTopic(topicName, 1, (short) 1);
+		return new NewTopic(topicName, 1, (short) 3);
 	}
 
 	@Override
+	@Transactional
 	public void run(String... args) {
-		IntStream.range(0, messagesCount).forEach(i -> this.template.send(topicName, String.valueOf(i),
-				new PracticalAdvice("A Practical Advice Number " + i, i, LocalDateTime.now())));
+		IntStream.range(0, messagesCount).forEach(i -> this.template.send(topicName, String.valueOf(i), new PracticalAdvice("A Practical Advice Number " + i, i, LocalDateTime.now())));
 		logger.info("All messages sent");
 	}
 }
