@@ -58,3 +58,4 @@ curl -v -H "Accept: application/vnd.kafka.json.v1+json" 'http://localhost:8082/t
 * https://kafka.apache.org/documentation/#basic_ops_increase_replication_factor
 * https://docs.spring.io/spring-kafka/reference/html/#transactions
 * https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#common-application-properties
+* https://www.confluent.io/blog/transactions-apache-kafka/
