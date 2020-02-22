@@ -12,7 +12,10 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-#      value-deserializer: org.springframework.kafka.support.serializer.StringSerializer
+      properties:
+        # for ordering
+        max.in.flight.requests.per.connection: 1
+    #      value-deserializer: org.springframework.kafka.support.serializer.StringSerializer
     # change this property if you are using your own
     # Kafka cluster or your Docker IP is different
     bootstrap-servers: localhost:9092
