@@ -50,8 +50,8 @@ public class KafkotestApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) {
-//		IntStream.range(0, messagesCount).forEach(i -> this.template.send(topicName, String.valueOf(i),
-//				new PracticalAdvice("A Practical Advice Number " + i, i, LocalDateTime.now())));
-//		logger.info("All messages sent");
+		IntStream.range(0, messagesCount).forEach(i -> this.template.send(topicName, String.valueOf(i),
+				new PracticalAdvice("A Practical Advice Number " + i, i, LocalDateTime.now())));
+		logger.info("All messages sent");
 	}
 }

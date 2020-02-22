@@ -16,8 +16,8 @@ spring:
         # for ordering
         max.in.flight.requests.per.connection: 1
     bootstrap-servers: localhost:9092
-    listener:
-      ack-mode: manual
+#    listener:
+#      ack-mode: manual
 
 tpd:
   topic-name: advice-topic
