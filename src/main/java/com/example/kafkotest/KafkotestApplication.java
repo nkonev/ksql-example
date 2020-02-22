@@ -14,6 +14,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.*;
 import org.springframework.messaging.handler.annotation.Payload;
+
+import java.time.LocalDateTime;
 import java.util.stream.IntStream;
 
 // https://thepracticaldeveloper.com/2018/11/24/spring-boot-kafka-config/
@@ -48,7 +50,8 @@ public class KafkotestApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) {
-//		IntStream.range(0, messagesCount).forEach(i -> this.template.send(topicName, String.valueOf(i), new PracticalAdvice("A Practical Advice Number " + i, i)));
+//		IntStream.range(0, messagesCount).forEach(i -> this.template.send(topicName, String.valueOf(i),
+//				new PracticalAdvice("A Practical Advice Number " + i, i, LocalDateTime.now())));
 //		logger.info("All messages sent");
 	}
 }
