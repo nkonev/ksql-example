@@ -34,7 +34,7 @@ spring:
       type: batch
       ack-mode: batch
       # increase batch consuming: set poll-timeout
-      poll-timeout: 10s
+      poll-timeout: 20s
 
 tpd:
   topic-name: advice-topic
