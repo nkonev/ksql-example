@@ -66,6 +66,7 @@ docker-compose down -v; docker-compose up -d
 # Setting up Transactions
 ## MongoDB
 You need replica set and custom start command - see docker-compose.yml
+`--replSet", "rs0`
 
 ## Kafka
 You need configure producer and consumer in application.yml
