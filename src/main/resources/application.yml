@@ -3,7 +3,7 @@
 spring:
   kafka:
     consumer:
-      group-id: group-id
+      group-id: my-advice-app
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
@@ -17,7 +17,7 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      transaction-id-prefix: ${spring.cloud.client.ip-address}_tx.
+      transaction-id-prefix: tx_${spring.cloud.client.ip-address}_
       properties:
         # for ordering
         max.in.flight.requests.per.connection: 1
