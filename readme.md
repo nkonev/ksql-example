@@ -65,10 +65,10 @@ docker-compose down -v; docker-compose up -d
 
 # Setting up Transactions
 ## MongoDB
-You need replica set and custom start command - see docker-compose.
+You need replica set and custom start command - see docker-compose.yml
 
 ## Kafka
-You need configure producer and consumer in application.yaml
+You need configure producer and consumer in application.yml
 ### Consumer
 ```yaml
         isolation.level: read_committed # don't read still not committed messages
