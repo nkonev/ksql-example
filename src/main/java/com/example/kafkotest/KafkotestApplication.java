@@ -1,13 +1,7 @@
 package com.example.kafkotest;
 
-import com.mongodb.ClientSessionOptions;
-import com.mongodb.client.ClientSession;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoCollection;
 import io.tpd.kafkaexample.PracticalAdvice;
 import org.apache.kafka.clients.admin.NewTopic;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,15 +10,11 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.mongodb.MongoDbFactory;
-import org.springframework.data.mongodb.MongoTransactionManager;
-import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.core.*;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -88,28 +78,4 @@ public class KafkotestApplication implements CommandLineRunner {
 			mongoTemplate.createCollection(PracticalAdvice.class);
 		}
 	}
-
-
-	/*@Autowired
-	private MongoClient client;
-
-	private se() {
-		MongoCollection<Document> collection = client.getDatabase("").getCollection("");
-
-		try (ClientSession session = client.startSession()) {
-
-			session.startTransaction();
-
-			try {
-
-				collection.insertOne(session, documentOne);
-				collection.insertOne(session, documentTwo);
-
-				session.commitTransaction();
-
-			} catch (Exception e) {
-				session.abortTransaction();
-			}
-		}
-	}*/
 }

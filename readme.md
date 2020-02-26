@@ -1,12 +1,3 @@
-# Getting Started
-
-### Reference Documentation
-For further reference, please consider the following sections:
-
-* [Official Apache Maven documentation](https://maven.apache.org/guides/index.html)
-* [Spring Boot Maven Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/2.2.2.RELEASE/maven-plugin/)
-* [Spring for Apache Kafka](https://docs.spring.io/spring-boot/docs/2.2.2.RELEASE/reference/htmlsingle/#boot-features-kafka)
-
 # Playing with kafka
 ```bash
 docker-compose logs broker | grep retention
@@ -52,7 +43,9 @@ curl -v -H "Accept: application/vnd.kafka.json.v1+json" 'http://localhost:8082/t
 ```
 ![](.markdown/read_from_rest.png)
 
-# Useful links
+# Transactions
+
+## Useful links
 * https://www.cloudkarafka.com/blog/2019-04-10-apache-kafka-idempotent-producer-avoiding-message-duplication.html
 * https://www.confluent.io/blog/spring-for-apache-kafka-deep-dive-part-1-error-handling-message-conversion-transaction-support/
 * https://kafka.apache.org/documentation/#basic_ops_increase_replication_factor
@@ -61,3 +54,88 @@ curl -v -H "Accept: application/vnd.kafka.json.v1+json" 'http://localhost:8082/t
 * https://www.confluent.io/blog/transactions-apache-kafka/
 
 KafkaTransactionManager created in KafkaAutoConfiguration @ConditionalOnProperty(name = "spring.kafka.producer.transaction-id-prefix")
+
+How to test:
+1) Reset previously inserted and start containers
+```
+docker-compose down -v; docker-compose up -d
+```
+
+2) Pinpoint the time
+
+# Setting up Transactions
+## MongoDB
+You need replica set and custom start command - see docker-compose.
+
+## Kafka
+You need configure producer and consumer in application.yaml
+### Consumer
+```yaml
+        isolation.level: read_committed # don't read still not committed messages
+        max.poll.records: 8000 # Optimization
+```
+
+Also we add
+```yaml
+    listener:
+      # increase batch consuming: set type=batch
+      type: batch
+      ack-mode: batch
+      # increase batch consuming: set poll-timeout
+      poll-timeout: 10s
+```
+for increase `@KafkaListener`'s speed.
+
+### Producer
+```yaml
+    transaction-id-prefix: ${spring.cloud.client.ip-address}_tx. # prefix need for idempotency. it should be different across nodes. consider append http port if you run multiple web apps on same machine
+        max.in.flight.requests.per.connection: 1 # for ordering
+        enable.idempotence: true # make idempotent producer
+        delivery.timeout.ms: 300000 # 5 minutes producer will re-send message(s?)
+        retry.backoff.ms: 1000
+        acks: all # we test acks of all 3 kafka replicas
+```
+
+### Spring
+See `TransactionConfig.java`
+
+# Open MongoDB
+```
+docker exec -it kafkotest_mongo_1 mongo
+use test
+db.practicalAdvice.count();
+```
+
+# Benchmark
+We test adding 1 million dtos to Kafka, and write all to MongoDB.
+
+## Spring Boot 2.2.4, no transactions, no MongoDB
+```
+2020-02-26 23:02:08.172  INFO 1525082 --- [ntainer#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer    : group-id: partitions assigned: [advice-topic-0]
+2020-02-26 23:02:18.470  INFO 1525082 --- [           main] c.e.kafkotest.KafkotestApplication       : All messages sent
+
+2020-02-26 23:02:18.600  INFO 1525082 --- [ntainer#0-0-C-1] c.e.kafkotest.KafkotestApplication       : received:  Payload: PracticalAdvice{message='A Practical Advice Number 0', identifier=0, datetime=2020-02-26T23:02:04.113982}
+2020-02-26 23:02:27.653  INFO 1525082 --- [ntainer#0-0-C-1] c.e.kafkotest.KafkotestApplication       : received:  Payload: PracticalAdvice{message='A Practical Advice Number 999999', identifier=999999, datetime=2020-02-26T23:02:18.470542}
+```
+
+## Spring Boot 2.2.4, no transactions, change int -> String in kafka message's key
+```
+2020-02-26 23:13:41.979  INFO 1574413 --- [ntainer#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer    : group-id: partitions assigned: [advice-topic-0]
+2020-02-26 23:14:00.798  INFO 1574413 --- [           main] c.e.kafkotest.KafkotestApplication       : All messages sent
+
+2020-02-26 23:14:02.915  INFO 1574413 --- [ntainer#0-0-C-1] c.e.kafkotest.KafkotestApplication       : received:  Payload: PracticalAdvice{message='A Practical Advice Number 0', identifier=0, datetime=2020-02-26T23:13:37.628907}
+2020-02-26 23:14:14.877  INFO 1574413 --- [ntainer#0-0-C-1] c.e.kafkotest.KafkotestApplication       : received:  Payload: PracticalAdvice{message='A Practical Advice Number 999999', identifier=999999, datetime=2020-02-26T23:14:00.798071}
+```
+
+## Spring Boot 2.2.4, Kafka + MongoDB transactions, bulk MongoDB via mongoTemplate.insert(payloads, PracticalAdvice.class);
+```
+2020-02-27 01:35:18.893  INFO 2184648 --- [ntainer#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer    : group-id: partitions assigned: [advice-topic-0]
+2020-02-27 01:35:43.849  INFO 2184648 --- [           main] c.e.kafkotest.KafkotestApplication       : All messages sent
+
+2020-02-27 01:35:46.713  INFO 2184648 --- [ntainer#0-0-C-1] c.e.kafkotest.KafkotestApplication       : received:  Payload: PracticalAdvice{message='A Practical Advice Number 0', identifier=0, datetime=2020-02-27T01:35:16.115226}
+2020-02-27 01:37:35.264  INFO 2184648 --- [ntainer#0-0-C-1] c.e.kafkotest.KafkotestApplication       : received:  Payload: PracticalAdvice{message='A Practical Advice Number 999999', identifier=999999, datetime=2020-02-27T01:35:43.849837}
+```
+
+# TODO
+* Add restart unless-stopped to docker-compose
+* Set volumes to Kafka and Zookeeper to be able to survive computer restart
