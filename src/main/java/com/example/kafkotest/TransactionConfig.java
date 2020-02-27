@@ -1,5 +1,7 @@
 package com.example.kafkotest;
 
+import com.mongodb.TransactionOptions;
+import com.mongodb.WriteConcern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +19,9 @@ public class TransactionConfig implements TransactionManagementConfigurer {
 
     @Bean
     public MongoTransactionManager transactionManager(MongoDbFactory dbFactory) {
-        return new MongoTransactionManager(dbFactory);
+        MongoTransactionManager mongoTransactionManager = new MongoTransactionManager(dbFactory);
+        mongoTransactionManager.setOptions(TransactionOptions.builder().writeConcern(WriteConcern.JOURNALED).build());
+        return mongoTransactionManager;
     }
 
     @Autowired
