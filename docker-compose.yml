@@ -75,12 +75,12 @@ services:
       KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: 'false'
 
   mongo:
-    image: mongo:4.2.2-bionic
+    image: mongo:4.2.3-bionic
     network_mode: host
     volumes:
       - mongo_kafkotest_data_dir:/data/db
       - ./docker/mongo/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-    command: ["--replSet", "rs0"]
+    command: ["--replSet", "rs0", "--quiet"]
 
 volumes:
   mongo_kafkotest_data_dir:
