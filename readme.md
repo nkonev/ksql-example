@@ -110,7 +110,7 @@ db.practicalAdvice.count();
 # Benchmark
 We test adding 1 million dtos to Kafka, and write all to MongoDB.
 
-## Spring Boot 2.2.4, no transactions, no MongoDB
+## Spring Boot 2.2.4, no transactions, no batch Kafka, no MongoDB
 ```
 2020-02-26 23:02:08.172  INFO 1525082 --- [ntainer#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer    : group-id: partitions assigned: [advice-topic-0]
 2020-02-26 23:02:18.470  INFO 1525082 --- [           main] c.e.kafkotest.KafkotestApplication       : All messages sent
@@ -119,7 +119,7 @@ We test adding 1 million dtos to Kafka, and write all to MongoDB.
 2020-02-26 23:02:27.653  INFO 1525082 --- [ntainer#0-0-C-1] c.e.kafkotest.KafkotestApplication       : received:  Payload: PracticalAdvice{message='A Practical Advice Number 999999', identifier=999999, datetime=2020-02-26T23:02:18.470542}
 ```
 
-## Spring Boot 2.2.4, no transactions, change int -> String in kafka message's key
+## Spring Boot 2.2.4, no transactions, no batch Kafka, change int -> String in kafka message's key
 ```
 2020-02-26 23:13:41.979  INFO 1574413 --- [ntainer#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer    : group-id: partitions assigned: [advice-topic-0]
 2020-02-26 23:14:00.798  INFO 1574413 --- [           main] c.e.kafkotest.KafkotestApplication       : All messages sent
@@ -128,7 +128,7 @@ We test adding 1 million dtos to Kafka, and write all to MongoDB.
 2020-02-26 23:14:14.877  INFO 1574413 --- [ntainer#0-0-C-1] c.e.kafkotest.KafkotestApplication       : received:  Payload: PracticalAdvice{message='A Practical Advice Number 999999', identifier=999999, datetime=2020-02-26T23:14:00.798071}
 ```
 
-## Spring Boot 2.2.4, Kafka + MongoDB transactions, bulk MongoDB via mongoTemplate.insert(payloads, PracticalAdvice.class);
+## Spring Boot 2.2.4, Kafka + MongoDB transactions, batch Kafka, bulk MongoDB
 ```
 2020-02-27 01:35:18.893  INFO 2184648 --- [ntainer#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer    : group-id: partitions assigned: [advice-topic-0]
 2020-02-27 01:35:43.849  INFO 2184648 --- [           main] c.e.kafkotest.KafkotestApplication       : All messages sent
@@ -137,7 +137,7 @@ We test adding 1 million dtos to Kafka, and write all to MongoDB.
 2020-02-27 01:37:35.264  INFO 2184648 --- [ntainer#0-0-C-1] c.e.kafkotest.KafkotestApplication       : received:  Payload: PracticalAdvice{message='A Practical Advice Number 999999', identifier=999999, datetime=2020-02-27T01:35:43.849837}
 ```
 
-## Spring Boot 2.2.4, Kafka + MongoDB transactions, bulk MongoDB via mongoTemplate.insert(payloads, PracticalAdvice.class) + MongoDB WriteConcern=JOURNALED on SSD
+## Spring Boot 2.2.4, Kafka + MongoDB transactions, batch Kafka, bulk MongoDB, MongoDB WriteConcern=JOURNALED on SSD
 ```
 2020-02-27 03:11:41.887  INFO 43756 --- [ntainer#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer    : my-advice-app: partitions assigned: [advice-topic-0]
 2020-02-27 03:11:58.974  INFO 43756 --- [           main] c.e.kafkotest.KafkotestApplication       : All messages sent
@@ -146,7 +146,7 @@ We test adding 1 million dtos to Kafka, and write all to MongoDB.
 2020-02-27 03:13:43.909  INFO 43756 --- [ntainer#0-0-C-1] c.e.kafkotest.KafkotestApplication       : received:  Payload: PracticalAdvice{message='A Practical Advice Number 999999', identifier=999999, datetime=2020-02-27T03:11:58.974225}
 ```
 
-## Spring Boot 2.2.4, Kafka + MongoDB no transactions, bulk MongoDB & Kafka
+## Spring Boot 2.2.4, Kafka + MongoDB no transactions, batch Kafka, bulk MongoDB
 ```
 # another PC
 2020-02-27 19:35:03.464  INFO 2303549 --- [ntainer#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer    : my-advice-app: partitions assigned: [advice-topic-0]
@@ -154,6 +154,19 @@ We test adding 1 million dtos to Kafka, and write all to MongoDB.
 
 2020-02-27 19:35:17.891  INFO 2303549 --- [           main] c.e.kafkotest.KafkotestApplication       : All messages sent
 2020-02-27 19:36:40.190  INFO 2303549 --- [ntainer#0-0-C-1] c.e.kafkotest.KafkotestApplication       : received:  Payload: PracticalAdvice{message='A Practical Advice Number 999999', identifier=999999, datetime=2020-02-27T19:35:17.891611}
+```
+
+
+If you let MongoDB generate ids, e. g. modify
+    @Id
+    private String id;
+MongoDB will inserts faster:
+## Spring Boot 2.2.4, Kafka + MongoDB transactions, batch Kafka, bulk MongoDB, MongoDB WriteConcern=JOURNALED on SSD, ids=null
+```
+2020-02-27 21:37:45.189  INFO 2424167 --- [ntainer#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer    : my-advice-app: partitions assigned: [advice-topic-0]
+2020-02-27 21:38:05.340  INFO 2424167 --- [           main] c.e.kafkotest.KafkotestApplication       : All messages sent
+2020-02-27 21:38:07.374  INFO 2424167 --- [ntainer#0-0-C-1] c.e.kafkotest.KafkotestApplication       : received:  Payload: PracticalAdvice{message='A Practical Advice Number 0', identifier=0, datetime=2020-02-27T21:37:41.466963}
+2020-02-27 21:38:42.918  INFO 2424167 --- [ntainer#0-0-C-1] c.e.kafkotest.KafkotestApplication       : received:  Payload: PracticalAdvice{message='A Practical Advice Number 999999', identifier=999999, datetime=2020-02-27T21:38:05.340141}
 ```
 
 # TODO
