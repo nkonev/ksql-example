@@ -157,9 +157,11 @@ We test adding 1 million dtos to Kafka, and write all to MongoDB.
 ```
 
 
-If you let MongoDB generate ids, e. g. modify
+If you let MongoDB generate ids, e. g. modify `PracticalAdvice.java` and its will null then
+```java
     @Id
     private String id;
+```
 MongoDB will inserts faster:
 ## Spring Boot 2.2.4, Kafka + MongoDB transactions, batch Kafka, bulk MongoDB, MongoDB WriteConcern=JOURNALED on SSD, ids=null
 ```
