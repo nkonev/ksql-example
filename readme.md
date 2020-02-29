@@ -55,6 +55,7 @@ curl -v -H "Accept: application/vnd.kafka.json.v1+json" 'http://localhost:8082/t
 * http://gharshangupta.blogspot.com/2015/03/spring-distributed-transactions-using_2.html
 * https://www.javaworld.com/article/2077963/distributed-transactions-in-spring--with-and-without-xa.html
 * https://dzone.com/articles/interpreting-kafkas-exactly-once-semantics
+* http://dbmsmusings.blogspot.com/2019/01/its-time-to-move-on-from-two-phase.html
 
 KafkaTransactionManager created in KafkaAutoConfiguration @ConditionalOnProperty(name = "spring.kafka.producer.transaction-id-prefix")
 
