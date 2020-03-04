@@ -73,6 +73,21 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: localhost:22181,localhost:32181,localhost:42181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:39092
       KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: 'false'
+  # https://docs.confluent.io/current/ksql/docs/installation/install-ksql-with-docker.html
+  ksql-server:
+    image: confluentinc/cp-ksql-server:5.3.1
+    network_mode: host
+    depends_on:
+      - kafka-1
+    ports:
+      - "8088:8088"
+    environment:
+      KSQL_CONFIG_DIR: "/etc/ksql"
+      KSQL_LOG4J_OPTS: "-Dlog4j.configuration=file:/etc/ksql/log4j-rolling.properties"
+      KSQL_BOOTSTRAP_SERVERS: "localhost:19092"
+      KSQL_HOST_NAME: ksql-server
+      KSQL_LISTENERS: "http://0.0.0.0:8088"
+      KSQL_CACHE_MAX_BYTES_BUFFERING: 0
 
   mongo:
     image: mongo:4.2.2-bionic

@@ -178,3 +178,11 @@ MongoDB will inserts faster:
 # TODO
 * Add restart unless-stopped to docker-compose
 * Set volumes to Kafka and Zookeeper to be able to survive computer restart
+
+# KSQL
+* https://docs.confluent.io/current/ksql/docs/developer-guide/syntax-reference.html
+* https://blog.knoldus.com/ksql-streams-and-tables/
+* https://blog.knoldus.com/ksql-getting-started-with-streaming-sql-for-apache-kafka/
+```
+CREATE STREAM advices_original (identifier varchar, message varchar, datetime varchar) WITH  (kafka_topic='advice-topic', value_format='JSON');
+```
