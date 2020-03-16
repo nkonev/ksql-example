@@ -176,7 +176,6 @@ MongoDB will inserts faster:
 ```
 
 # TODO
-* Add restart unless-stopped to docker-compose
 * Set volumes to Kafka and Zookeeper to be able to survive computer restart
 
 # KSQL
@@ -185,8 +184,11 @@ MongoDB will inserts faster:
 * https://blog.knoldus.com/ksql-getting-started-with-streaming-sql-for-apache-kafka/
 * https://www.confluent.io/blog/troubleshooting-ksql-part-1/#later-offset
 ```
+docker-compose exec ksql-server ksql
 CREATE STREAM advices_original (identifier varchar, message varchar, datetime varchar) WITH  (kafka_topic='advice-topic', value_format='JSON');
 DESCRIBE EXTENDED advices_original;
 SET 'auto.offset.reset'='earliest';
-rec-reate stream and wait > 30 seconds.
+
+select * from advices_original where identifier='900000';
+wait > 30 seconds.
 ```
