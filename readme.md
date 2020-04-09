@@ -185,8 +185,13 @@ MongoDB will inserts faster:
 * https://blog.knoldus.com/ksql-getting-started-with-streaming-sql-for-apache-kafka/
 * https://www.confluent.io/blog/troubleshooting-ksql-part-1/#later-offset
 ```
+docker-compose exec ksql-server ksql
+
 CREATE STREAM advices_original (identifier varchar, message varchar, datetime varchar) WITH  (kafka_topic='advice-topic', value_format='JSON');
 DESCRIBE EXTENDED advices_original;
 SET 'auto.offset.reset'='earliest';
-rec-reate stream and wait > 30 seconds.
+
+SELECT * FROM advices_original;
+
+...and wait > 30 seconds
 ```
