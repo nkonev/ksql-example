@@ -5,7 +5,6 @@ import com.mongodb.WriteConcern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.MongoTransactionManager;
 import org.springframework.kafka.transaction.ChainedKafkaTransactionManager;
@@ -19,7 +18,7 @@ import org.springframework.transaction.annotation.TransactionManagementConfigure
 public class TransactionConfig implements TransactionManagementConfigurer {
 
     @Bean
-    public MongoTransactionManager transactionManager(MongoDatabaseFactory dbFactory) {
+    public MongoTransactionManager transactionManager(MongoDbFactory dbFactory) {
         MongoTransactionManager mongoTransactionManager = new MongoTransactionManager(dbFactory);
         mongoTransactionManager.setOptions(TransactionOptions.builder().writeConcern(WriteConcern.JOURNALED).build());
         return mongoTransactionManager;

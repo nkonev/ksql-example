@@ -42,7 +42,7 @@ public class KafkotestApplication implements CommandLineRunner {
 	private final int messagesCount = 1_000_000;
 
 	@Transactional
-	@KafkaListener(topics = "${tpd.topic-name}", clientIdPrefix = "json")
+	@KafkaListener(topics = "${tpd.topic-name}", clientIdPrefix = "adviceAppClient", id = "adviceAppListenerId")
 	public void listenAsObject(
 			@Payload List<PracticalAdvice> payloads
 			//@Payload PracticalAdvice payload
