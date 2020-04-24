@@ -1,4 +1,6 @@
 #logging.level.org.springframework.kafka.listener: DEBUG
+management.endpoints.web.exposure.include: '*'
+management.endpoint.health.show-details: always
 
 spring:
   kafka:
