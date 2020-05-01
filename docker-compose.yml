@@ -1,9 +1,9 @@
 # https://docs.confluent.io/current/quickstart/ce-docker-quickstart.html
-# ~/javaWorkspace/examples/cp-all-in-one (5.3.1-post)
+# ~/javaWorkspace/examples/cp-all-in-one (5.5.0-post)
 version: '3.7'
 services:
   zookeeper-1:
-    image: confluentinc/cp-zookeeper:5.3.1
+    image: confluentinc/cp-zookeeper:5.5.0
     restart: unless-stopped
     environment:
       ZOOKEEPER_SERVER_ID: 1
@@ -17,7 +17,7 @@ services:
     network_mode: host
 
   zookeeper-2:
-    image: confluentinc/cp-zookeeper:5.3.1
+    image: confluentinc/cp-zookeeper:5.5.0
     restart: unless-stopped
     environment:
       ZOOKEEPER_SERVER_ID: 2
@@ -30,7 +30,7 @@ services:
     network_mode: host
 
   zookeeper-3:
-    image: confluentinc/cp-zookeeper:5.3.1
+    image: confluentinc/cp-zookeeper:5.5.0
     restart: unless-stopped
     environment:
       ZOOKEEPER_SERVER_ID: 3
@@ -43,7 +43,7 @@ services:
     network_mode: host
 
   kafka-1:
-    image: confluentinc/cp-enterprise-kafka:5.3.1
+    image: confluentinc/cp-enterprise-kafka:5.5.0
     network_mode: host
     restart: unless-stopped
     depends_on:
@@ -61,7 +61,7 @@ services:
         max-size: "50m"
         max-file: "1"
   kafka-2:
-    image: confluentinc/cp-enterprise-kafka:5.3.1
+    image: confluentinc/cp-enterprise-kafka:5.5.0
     network_mode: host
     restart: unless-stopped
     depends_on:
@@ -79,7 +79,7 @@ services:
         max-size: "50m"
         max-file: "1"
   kafka-3:
-    image: confluentinc/cp-enterprise-kafka:5.3.1
+    image: confluentinc/cp-enterprise-kafka:5.5.0
     network_mode: host
     restart: unless-stopped
     depends_on:
@@ -99,7 +99,7 @@ services:
 
   # https://docs.confluent.io/current/ksql/docs/installation/install-ksql-with-docker.html
   ksql-server:
-    image: confluentinc/cp-ksql-server:5.3.1
+    image: confluentinc/cp-ksqldb-server:5.5.0
     network_mode: host
     restart: unless-stopped
     depends_on:
@@ -112,7 +112,7 @@ services:
       KSQL_CACHE_MAX_BYTES_BUFFERING: 0
 
   mongo:
-    image: mongo:4.2.2-bionic
+    image: mongo:4.2.6-bionic
     restart: unless-stopped
     ports:
       - "27017:27017"

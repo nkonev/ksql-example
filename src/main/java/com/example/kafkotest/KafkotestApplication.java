@@ -53,6 +53,7 @@ public class KafkotestApplication implements CommandLineRunner {
 				logger.info("received:  Payload: {}", payload);
 			}
 			//mongoTemplate.insert(payload);
+			//payload.setIdentifier(null);
 		}
 		mongoTemplate.insert(payloads, PracticalAdvice.class);
 	}
