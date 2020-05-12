@@ -27,7 +27,7 @@ spring:
         retry.backoff.ms: 1000
         acks: all
         #transactional.id: producer-1
-    bootstrap-servers: localhost:9092,localhost:9093,localhost:9094
+    bootstrap-servers: localhost:19092
     # https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#common-application-properties
     listener:
       # increase batch consuming: set type=batch
