@@ -99,7 +99,7 @@ services:
 
   # https://docs.confluent.io/current/ksql/docs/installation/install-ksql-with-docker.html
   ksql-server:
-    image: confluentinc/cp-ksqldb-server:5.5.0
+    image: confluentinc/ksqldb-server:0.15.0
     network_mode: host
     restart: unless-stopped
     depends_on:
