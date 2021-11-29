@@ -1,6 +1,4 @@
 #logging.level.org.springframework.kafka.listener: DEBUG
-management.endpoints.web.exposure.include: '*'
-management.endpoint.health.show-details: always
 
 spring:
   kafka:
@@ -12,14 +10,11 @@ spring:
       properties:
         # https://kafka.apache.org/documentation/#configuration
         spring.json.trusted.packages: io.tpd.kafkaexample
-        isolation.level: read_committed
-        enable.auto.commit: false
         # increase batch consuming: set max.poll.records
         max.poll.records: 8000
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      transaction-id-prefix: tx_${spring.cloud.client.ip-address}_
       properties:
         # for ordering
         max.in.flight.requests.per.connection: 1
@@ -28,15 +23,8 @@ spring:
         delivery.timeout.ms: 300000 # 5 minutes
         retry.backoff.ms: 1000
         acks: all
-        #transactional.id: producer-1
-    bootstrap-servers: localhost:19092
-    # https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#common-application-properties
-    listener:
-      # increase batch consuming: set type=batch
-      type: batch
-      ack-mode: batch
-      # increase batch consuming: set poll-timeout
-      poll-timeout: 20s
+
+    bootstrap-servers: localhost:9092
 
 tpd:
   topic-name: advice-topic

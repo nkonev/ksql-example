@@ -1,15 +1,11 @@
 package io.tpd.kafkaexample;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
-@Document
 public class PracticalAdvice {
 
-    @Id
     private String identifier;
     private String message;
     private LocalDateTime datetime;
