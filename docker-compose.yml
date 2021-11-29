@@ -4,7 +4,6 @@ version: '3.7'
 services:
   kafka:
     image: confluentinc/cp-kafka:7.0.0
-    hostname: broker
     container_name: kafka
     ports:
       - "9092:9092"
@@ -12,7 +11,7 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
-      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092'
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
@@ -21,8 +20,8 @@ services:
       KAFKA_JMX_HOSTNAME: localhost
       KAFKA_PROCESS_ROLES: 'broker,controller'
       KAFKA_NODE_ID: 1
-      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@broker:29093'
-      KAFKA_LISTENERS: 'PLAINTEXT://broker:29092,CONTROLLER://broker:29093,PLAINTEXT_HOST://localhost:9092'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:29093'
+      KAFKA_LISTENERS: 'PLAINTEXT://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://localhost:9092'
       KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
       KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
       KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: 'false'
@@ -32,18 +31,19 @@ services:
     command: "bash -c 'if [ ! -f /tmp/update_run.sh ]; then echo \"ERROR: Did you forget the update_run.sh file that came with this docker-compose.yml file?\" && exit 1 ; else /tmp/update_run.sh && /etc/confluent/docker/run ; fi'"
 
   # https://docs.confluent.io/current/ksql/docs/installation/install-ksql-with-docker.html
-  ksql-server:
+  ksqldb:
     image: confluentinc/ksqldb-server:0.22.0
-    network_mode: host
+    container_name: ksqldb
     restart: unless-stopped
+    ports:
+      - "8088:8088"
     depends_on:
       - kafka
     environment:
-      KSQL_CONFIG_DIR: "/etc/ksql"
-      KSQL_BOOTSTRAP_SERVERS: "localhost:19092"
-      KSQL_HOST_NAME: ksql-server
+      # https://docs.ksqldb.io/en/latest/operate-and-deploy/installation/install-ksqldb-with-docker/#mount-volumes
+      KSQL_BOOTSTRAP_SERVERS: "kafka:29092"
       KSQL_LISTENERS: "http://0.0.0.0:8088"
+      KSQL_CONFLUENT_SUPPORT_METRICS_ENABLE: 'false'
 
 volumes:
   kafka_data:
-  mongo_kafkotest_data_dir:
