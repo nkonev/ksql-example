@@ -1,125 +1,50 @@
-# https://docs.confluent.io/current/quickstart/ce-docker-quickstart.html
-# ~/javaWorkspace/examples/cp-all-in-one (5.5.0-post)
+# https://github.com/confluentinc/cp-all-in-one/blob/7.0.0-post/cp-all-in-one-kraft/docker-compose.yml
 version: '3.7'
+
 services:
-  zookeeper-1:
-    image: confluentinc/cp-zookeeper:5.5.0
-    restart: unless-stopped
-    environment:
-      ZOOKEEPER_SERVER_ID: 1
-      ZOOKEEPER_CLIENT_PORT: 22181
-      ZOOKEEPER_TICK_TIME: 2000
-      ZOOKEEPER_INIT_LIMIT: 5
-      ZOOKEEPER_SYNC_LIMIT: 2
-      ZOOKEEPER_SERVERS: localhost:22888:23888;localhost:32888:33888;localhost:42888:43888
-      # https://zookeeper.apache.org/doc/r3.5.1-alpha/zookeeperAdmin.html
-      _JAVA_OPTIONS: -Dzookeeper.admin.serverPort=22800
-    network_mode: host
-
-  zookeeper-2:
-    image: confluentinc/cp-zookeeper:5.5.0
-    restart: unless-stopped
-    environment:
-      ZOOKEEPER_SERVER_ID: 2
-      ZOOKEEPER_CLIENT_PORT: 32181
-      ZOOKEEPER_TICK_TIME: 2000
-      ZOOKEEPER_INIT_LIMIT: 5
-      ZOOKEEPER_SYNC_LIMIT: 2
-      ZOOKEEPER_SERVERS: localhost:22888:23888;localhost:32888:33888;localhost:42888:43888
-      _JAVA_OPTIONS: -Dzookeeper.admin.serverPort=32800
-    network_mode: host
-
-  zookeeper-3:
-    image: confluentinc/cp-zookeeper:5.5.0
-    restart: unless-stopped
-    environment:
-      ZOOKEEPER_SERVER_ID: 3
-      ZOOKEEPER_CLIENT_PORT: 42181
-      ZOOKEEPER_TICK_TIME: 2000
-      ZOOKEEPER_INIT_LIMIT: 5
-      ZOOKEEPER_SYNC_LIMIT: 2
-      ZOOKEEPER_SERVERS: localhost:22888:23888;localhost:32888:33888;localhost:42888:43888
-      _JAVA_OPTIONS: -Dzookeeper.admin.serverPort=42800
-    network_mode: host
-
-  kafka-1:
-    image: confluentinc/cp-enterprise-kafka:5.5.0
-    network_mode: host
-    restart: unless-stopped
-    depends_on:
-      - zookeeper-1
-      - zookeeper-2
-      - zookeeper-3
+  kafka:
+    image: confluentinc/cp-kafka:7.0.0
+    hostname: broker
+    container_name: broker
+    ports:
+      - "9092:9092"
+      - "9101:9101"
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: localhost:22181,localhost:32181,localhost:42181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:19092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_JMX_PORT: 9101
+      KAFKA_JMX_HOSTNAME: localhost
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_NODE_ID: 1
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@broker:29093'
+      KAFKA_LISTENERS: 'PLAINTEXT://broker:29092,CONTROLLER://broker:29093,PLAINTEXT_HOST://localhost:9092'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
       KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: 'false'
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "50m"
-        max-file: "1"
-  kafka-2:
-    image: confluentinc/cp-enterprise-kafka:5.5.0
-    network_mode: host
-    restart: unless-stopped
-    depends_on:
-      - zookeeper-1
-      - zookeeper-2
-      - zookeeper-3
-    environment:
-      KAFKA_BROKER_ID: 2
-      KAFKA_ZOOKEEPER_CONNECT: localhost:22181,localhost:32181,localhost:42181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:29092
-      KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: 'false'
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "50m"
-        max-file: "1"
-  kafka-3:
-    image: confluentinc/cp-enterprise-kafka:5.5.0
-    network_mode: host
-    restart: unless-stopped
-    depends_on:
-      - zookeeper-1
-      - zookeeper-2
-      - zookeeper-3
-    environment:
-      KAFKA_BROKER_ID: 3
-      KAFKA_ZOOKEEPER_CONNECT: localhost:22181,localhost:32181,localhost:42181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:39092
-      KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: 'false'
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "50m"
-        max-file: "1"
+    volumes:
+      - ./update_run.sh:/tmp/update_run.sh
+      - kafka_data:/tmp/kraft-combined-logs
+    command: "bash -c 'if [ ! -f /tmp/update_run.sh ]; then echo \"ERROR: Did you forget the update_run.sh file that came with this docker-compose.yml file?\" && exit 1 ; else /tmp/update_run.sh && /etc/confluent/docker/run ; fi'"
 
   # https://docs.confluent.io/current/ksql/docs/installation/install-ksql-with-docker.html
   ksql-server:
-    image: confluentinc/ksqldb-server:0.15.0
+    image: confluentinc/ksqldb-server:0.22.0
     network_mode: host
     restart: unless-stopped
     depends_on:
-      - kafka-1
+      - kafka
     environment:
       KSQL_CONFIG_DIR: "/etc/ksql"
       KSQL_BOOTSTRAP_SERVERS: "localhost:19092"
       KSQL_HOST_NAME: ksql-server
       KSQL_LISTENERS: "http://0.0.0.0:8088"
-      KSQL_CACHE_MAX_BYTES_BUFFERING: 0
-
-  mongo:
-    image: mongo:4.2.6-bionic
-    restart: unless-stopped
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo_kafkotest_data_dir:/data/db
-      - ./docker/mongo/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-    command: ["--replSet", "rs0"]
 
 volumes:
+  kafka_data:
   mongo_kafkotest_data_dir:
