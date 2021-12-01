@@ -3,6 +3,7 @@
 * https://blog.knoldus.com/ksql-streams-and-tables/
 * https://blog.knoldus.com/ksql-getting-started-with-streaming-sql-for-apache-kafka/
 * https://www.confluent.io/blog/troubleshooting-ksql-part-1/#later-offset
+* https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-clients/java-client/
 ```
 docker-compose exec ksqldb ksql
 CREATE STREAM advices_original (identifier varchar, message varchar, datetime varchar) WITH  (kafka_topic='advice-topic', value_format='JSON');
