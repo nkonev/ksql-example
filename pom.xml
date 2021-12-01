@@ -33,7 +33,13 @@
 			<artifactId>spring-boot-starter-json</artifactId>
 		</dependency>
 
-		<dependency>
+        <dependency>
+            <groupId>io.confluent.ksql</groupId>
+            <artifactId>ksqldb-api-client</artifactId>
+            <version>7.0.0</version>
+        </dependency>
+
+        <dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
@@ -63,6 +69,11 @@
 			<name>Spring Milestones</name>
 			<url>https://repo.spring.io/milestone</url>
 		</repository>
+        <repository>
+            <id>confluent-packages</id>
+            <name>Confluent</name>
+            <url>https://packages.confluent.io/maven/</url>
+        </repository>
 	</repositories>
 
 	<pluginRepositories>
