@@ -1,0 +1,19 @@
+#logging.level.org.springframework.kafka.listener: DEBUG
+
+spring:
+  kafka:
+    consumer:
+      group-id: spring-consumer-my-advice-app
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        # https://kafka.apache.org/documentation/#configuration
+        spring.json.trusted.packages: io.tpd.kafkaexample
+        # increase batch consuming: set max.poll.records
+        max.poll.records: 8000
+
+    bootstrap-servers: localhost:9092
+
+tpd:
+  topic-name: advice-topic

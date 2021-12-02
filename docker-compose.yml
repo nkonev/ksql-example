@@ -45,6 +45,17 @@ services:
       KSQL_LISTENERS: "http://0.0.0.0:8088"
       KSQL_CONFLUENT_SUPPORT_METRICS_ENABLE: 'false'
 
+
+# docker exec -it ksqldb-cli ksql http://ksqldb:8088
+#  ksqldb-cli:
+#    image: confluentinc/ksqldb-cli:0.22.0
+#    container_name: ksqldb-cli
+#    depends_on:
+#      - kafka
+#      - ksqldb
+#    entrypoint: /bin/sh
+#    tty: true
+
 volumes:
   kafka_data:
   confluent_config_data:
