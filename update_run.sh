@@ -3,7 +3,8 @@
 format_done=/var/lib/kafka/data/format_done
 
 if [[ -f $format_done ]]; then
-  return 0
+  echo "Storage already formatted, skipping"
+  exit 0
 fi
 
 # Docker workaround: Remove check for KAFKA_ZOOKEEPER_CONNECT parameter
@@ -15,4 +16,4 @@ sed -i 's/cub zk-ready/echo ignore zk-ready/' /etc/confluent/docker/ensure
 # KRaft required step: Format the storage directory with a new cluster ID
 echo "kafka-storage format --ignore-formatted -t $(kafka-storage random-uuid) -c /etc/kafka/kafka.properties" >> /etc/confluent/docker/ensure
 
-touch /etc/confluent/format_done
+touch $format_done
