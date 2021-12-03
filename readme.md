@@ -13,6 +13,7 @@
 * https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/create-table/
 * https://docs.ksqldb.io/en/latest/how-to-guides/update-a-running-persistent-query/
 * Primary key behaviour https://docs.ksqldb.io/en/latest/reference/sql/data-definition/
+* Tombstone https://rmoff.net/2020/11/03/kafka-connect-ksqldb-and-kafka-tombstone-messages/
 
 ```
 docker-compose exec ksqldb ksql
