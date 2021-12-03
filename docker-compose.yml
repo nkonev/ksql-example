@@ -45,6 +45,8 @@ services:
       KSQL_BOOTSTRAP_SERVERS: "kafka:29092"
       KSQL_LISTENERS: "http://0.0.0.0:8088"
       KSQL_CONFLUENT_SUPPORT_METRICS_ENABLE: 'false'
+    volumes:
+      - ./docker/ksqldb/migrations:/share/ksql-migrations:z
 
 
 # docker exec -it ksqldb-cli ksql http://ksqldb:8088
