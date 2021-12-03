@@ -1,4 +1,3 @@
-# https://github.com/confluentinc/cp-all-in-one/blob/7.0.0-post/cp-all-in-one-kraft/docker-compose.yml
 version: '3.7'
 
 services:
@@ -26,10 +25,11 @@ services:
       KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
       KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: 'false'
     volumes:
-      - ./update_run.sh:/tmp/update_run.sh:z
+      - ./docker/kafka/entrypoint.sh:/sbin/entrypoint.sh:z
       - kafka_data:/var/lib/kafka/data:z
       - confluent_config_data:/etc/confluent/docker:z
-    command: "bash -c 'if [ ! -f /tmp/update_run.sh ]; then echo \"ERROR: Did you forget the update_run.sh file that came with this docker-compose.yml file?\" && exit 1 ; else /tmp/update_run.sh && /etc/confluent/docker/run ; fi'"
+    # https://github.com/confluentinc/cp-all-in-one/blob/7.0.0-post/cp-all-in-one-kraft/docker-compose.yml
+    entrypoint: /sbin/entrypoint.sh
 
   # https://docs.confluent.io/current/ksql/docs/installation/install-ksql-with-docker.html
   ksqldb:
