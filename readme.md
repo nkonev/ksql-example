@@ -8,6 +8,7 @@
 * https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-clients/java-client/
 * https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/select-pull-query/
 * https://docs.ksqldb.io/en/latest/operate-and-deploy/migrations-tool/
+* https://docs.ksqldb.io/en/latest/concepts/queries/
 
 ```
 docker-compose exec ksqldb ksql
