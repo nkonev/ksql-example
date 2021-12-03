@@ -44,7 +44,7 @@ kafka-topics --bootstrap-server localhost:9092 --list
 ```
 
 # Plan
-0. Kafka is consists of several apis (Producer-Consumer, Stream, Connect). KSQLDB uses Stream.
+0. Kafka is consists of several apis (Producer-Consumer, Stream, Connect). KSQLDB uses [Stream](https://docs.confluent.io/5.0.4/streams/faq.html).
 1. What is stream
 2. What is table
 3. Pull select https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/select-pull-query/ (from table, for request/response) - a client pulls a table. Pulls the current value from the materialized view and terminates. 
