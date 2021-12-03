@@ -57,7 +57,7 @@ kafka-topics --bootstrap-server localhost:9092 --list
 # Deal with users
 ```
 docker exec -it kafka bash
-kafka-console-consumer --bootstrap-server localhost:9092 --topic users
+kafka-console-consumer --bootstrap-server localhost:9092 --from-beginning --property print.key=true --key-deserializer="org.apache.kafka.common.serialization.LongDeserializer" --topic users
 
 in another terminal:
 docker exec -it ksqldb ksql
