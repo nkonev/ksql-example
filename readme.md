@@ -61,6 +61,7 @@ in another terminal:
 docker exec -it ksqldb ksql
 INSERT INTO users (userid, registertime, gender, regionid) VALUES (123, 1510923225000, 'M', 'Moscow');
 INSERT INTO users (userid, registertime, gender, regionid) VALUES (123, 1510923225000, 'MMM', 'Moscow');
+INSERT INTO users (userid, registertime, gender, regionid) VALUES (234, 1510923999000, 'F', 'Yekaterinburg');
 
 CREATE TABLE QUERYABLE_USERS_TMP AS SELECT * FROM USERS;
 select * from QUERYABLE_USERS_TMP;
@@ -68,4 +69,6 @@ select * from QUERYABLE_USERS_TMP;
 
 ```
 curl -i 'http://localhost:9088/user'
+curl -i -X PUT -H 'Content-Type: application/json' 'http://localhost:9088/user' -d '{"userId": 567, "registertime": null, "gender": "Male", "regionid": "Moscow"}'
+curl -i -X DELETE 'http://localhost:9088/user/123'
 ```
