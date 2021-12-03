@@ -9,6 +9,8 @@
 * https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/select-pull-query/
 * https://docs.ksqldb.io/en/latest/operate-and-deploy/migrations-tool/
 * https://docs.ksqldb.io/en/latest/concepts/queries/
+* https://docs.ksqldb.io/en/v0.7.0-ksqldb/developer-guide/create-a-table/
+* https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/create-table/
 
 ```
 docker-compose exec ksqldb ksql
@@ -26,11 +28,12 @@ SELECT * FROM advices_original where identifier='900000' EMIT CHANGES;
 # Initializing migrations from host
 ```
 docker run -v $PWD/docker/ksqldb/migrations:/share/ksql-migrations confluentinc/ksqldb-server:0.22.0 ksql-migrations new-project /share/ksql-migrations http://host.docker.internal:8088
-docker run -v $PWD/docker/ksqldb/migrations:/share/ksql-migrations confluentinc/ksqldb-server:0.22.0 ksql-migrations --config-file /share/ksql-migrations/ksql-migrations.properties initialize-metadata
 ```
 
 # Apply migration from host
 ```
+docker run -v $PWD/docker/ksqldb/migrations:/share/ksql-migrations confluentinc/ksqldb-server:0.22.0 ksql-migrations --config-file /share/ksql-migrations/ksql-migrations.properties initialize-metadata
+
 docker run -v $PWD/docker/ksqldb/migrations:/share/ksql-migrations confluentinc/ksqldb-server:0.22.0 ksql-migrations --config-file /share/ksql-migrations/ksql-migrations.properties apply --all
 ```
 
