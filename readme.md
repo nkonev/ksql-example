@@ -11,6 +11,7 @@
 * https://docs.ksqldb.io/en/latest/concepts/queries/
 * https://docs.ksqldb.io/en/v0.7.0-ksqldb/developer-guide/create-a-table/
 * https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/create-table/
+* https://docs.ksqldb.io/en/latest/how-to-guides/update-a-running-persistent-query/
 
 ```
 docker-compose exec ksqldb ksql
