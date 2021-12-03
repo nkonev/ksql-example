@@ -59,4 +59,7 @@ kafka-console-consumer --bootstrap-server localhost:9092 --topic users
 in another terminal:
 docker exec -it ksqldb ksql
 INSERT INTO users (userid, registertime, gender, regionid) VALUES (123, 1510923225000, 'M', 'Moscow');
+
+CREATE TABLE QUERYABLE_USERS_TMP AS SELECT * FROM USERS;
+select * from QUERYABLE_USERS_TMP;
 ```
