@@ -7,6 +7,7 @@
 * https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-clients/java-client/#event-driven-microservice
 * https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-clients/java-client/
 * https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/select-pull-query/
+* https://docs.ksqldb.io/en/latest/operate-and-deploy/migrations-tool/
 
 ```
 docker-compose exec ksqldb ksql
@@ -19,4 +20,21 @@ SELECT * FROM advices_original EMIT CHANGES;
 SET 'auto.offset.reset'='earliest';
 SELECT * FROM advices_original where identifier='900000' EMIT CHANGES;
 ...and wait > 30 seconds.
+```
+
+# Initializing migrations from host
+```
+docker run -v $PWD/docker/ksqldb/migrations:/share/ksql-migrations confluentinc/ksqldb-server:0.22.0 ksql-migrations new-project /share/ksql-migrations http://host.docker.internal:8088
+docker run -v $PWD/docker/ksqldb/migrations:/share/ksql-migrations confluentinc/ksqldb-server:0.22.0 ksql-migrations --config-file /share/ksql-migrations/ksql-migrations.properties initialize-metadata
+```
+
+# Apply migration from host
+```
+docker run -v $PWD/docker/ksqldb/migrations:/share/ksql-migrations confluentinc/ksqldb-server:0.22.0 ksql-migrations --config-file /share/ksql-migrations/ksql-migrations.properties apply --all
+```
+
+# Check topic is present after migration
+```
+docker exec -it kafka bash
+kafka-topics --bootstrap-server localhost:9092 --list
 ```
