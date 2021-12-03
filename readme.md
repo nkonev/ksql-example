@@ -40,9 +40,8 @@ kafka-topics --bootstrap-server localhost:9092 --list
 ```
 
 # Plan
+0. Kafka is consists of several apis (Producer-Consumer, Stream, Connect). KSQLDB uses Stream.
 1. What is stream
 2. What is table
 3. Pull select https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/select-pull-query/ (from table, for request/response) - a client pulls a table. Pulls the current value from the materialized view and terminates. 
-4. Push select https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/select-push-query/ (from stream, for subscription on changes) - a stream pushes to client. Unlike persistent queries, push queries are not shared. If multiple clients submit the same push query, ksqlDB computes
-
-independent results for each client.
+4. Push select https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/select-push-query/ (from stream, for subscription on changes) - a stream pushes to client. Unlike persistent queries, push queries are not shared. If multiple clients submit the same push query, ksqlDB computes independent results for each client.
