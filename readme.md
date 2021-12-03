@@ -14,6 +14,7 @@
 * https://docs.ksqldb.io/en/latest/how-to-guides/update-a-running-persistent-query/
 * Primary key behaviour https://docs.ksqldb.io/en/latest/reference/sql/data-definition/
 * Tombstone https://rmoff.net/2020/11/03/kafka-connect-ksqldb-and-kafka-tombstone-messages/
+* Tombstone and delete https://stackoverflow.com/questions/66305527/how-to-delete-a-value-from-ksqldb-table-or-insert-a-tombstone-value/66314510#66314510
 
 ```
 docker-compose exec ksqldb ksql
@@ -72,4 +73,10 @@ select * from QUERYABLE_USERS_TMP;
 curl -i 'http://localhost:9088/user'
 curl -i -X PUT -H 'Content-Type: application/json' 'http://localhost:9088/user' -d '{"userId": 567, "registertime": null, "gender": "Male", "regionid": "Moscow"}'
 curl -i -X DELETE 'http://localhost:9088/user/123'
+```
+
+```
+select * from QUERYABLE_USERS;
+
+INSERT INTO USERS_DELETED (USERID,DUMMY) VALUES (123,CAST(NULL AS VARCHAR));
 ```

@@ -37,7 +37,7 @@ public class UserController {
 
     @GetMapping
     public List<UserDto> findUser() throws ExecutionException, InterruptedException {
-        BatchedQueryResult batchedQueryResult = ksqlClient.executeQuery("select * from QUERYABLE_USERS;");
+        BatchedQueryResult batchedQueryResult = ksqlClient.executeQuery("SELECT * from QUERYABLE_USERS;");
         List<Row> rows = batchedQueryResult.get();
         return rows.stream().map(row -> new UserDto(
                 row.getLong("USERID"),
@@ -49,7 +49,11 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable("id")Long id) throws ExecutionException, InterruptedException {
-        //ksqlClient.executeStatement("INSERT INTO USERS (USERID, REGISTERTIME, GENDER, REGIONID) VALUES (1510923225000, 'key', 'A');").get();
+        KsqlObject row = new KsqlObject()
+                .put("USERID", id)
+                .put("DUMMY", (String)null);
+
+        ksqlClient.insertInto("USERS_DELETED", row).get();
     }
 }
 
