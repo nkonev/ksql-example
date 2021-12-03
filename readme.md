@@ -50,3 +50,13 @@ kafka-topics --bootstrap-server localhost:9092 --list
 2. What is table
 3. Pull select https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/select-pull-query/ (from table, for request/response) - a client pulls a table. Pulls the current value from the materialized view and terminates. 
 4. Push select https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/select-push-query/ (from stream, for subscription on changes) - a stream pushes to client. Unlike persistent queries, push queries are not shared. If multiple clients submit the same push query, ksqlDB computes independent results for each client.
+
+# Deal with users
+```
+docker exec -it kafka bash
+kafka-console-consumer --bootstrap-server localhost:9092 --topic users
+
+in another terminal:
+docker exec -it ksqldb ksql
+INSERT INTO users (userid, registertime, gender, regionid) VALUES (123, 1510923225000, 'M', 'Moscow');
+```
