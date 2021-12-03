@@ -1,3 +1,6 @@
 ksql:
   host: localhost
   port: 8088
+
+server:
+  port: 9088

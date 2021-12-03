@@ -65,3 +65,7 @@ INSERT INTO users (userid, registertime, gender, regionid) VALUES (123, 15109232
 CREATE TABLE QUERYABLE_USERS_TMP AS SELECT * FROM USERS;
 select * from QUERYABLE_USERS_TMP;
 ```
+
+```
+curl -i 'http://localhost:9088/user'
+```
