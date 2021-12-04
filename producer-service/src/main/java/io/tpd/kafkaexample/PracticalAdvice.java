@@ -1,54 +1,9 @@
 package io.tpd.kafkaexample;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.time.LocalDateTime;
 
-public class PracticalAdvice {
-
-    private String identifier;
-    private String message;
-    private LocalDateTime datetime;
-
-    public PracticalAdvice(
-            @JsonProperty("identifier") final String identifier,
-            @JsonProperty("message") final String message,
-            @JsonProperty("datetime") LocalDateTime datetime) {
-        this.message = message;
-        this.identifier = identifier;
-        this.datetime = datetime;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    public LocalDateTime getDatetime() {
-        return datetime;
-    }
-
-    @Override
-    public String toString() {
-        return "PracticalAdvice{" +
-                "message='" + message + '\'' +
-                ", identifier=" + identifier +
-                ", datetime=" + datetime +
-                '}';
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public void setIdentifier(String identifier) {
-        this.identifier = identifier;
-    }
-
-    public void setDatetime(LocalDateTime datetime) {
-        this.datetime = datetime;
-    }
-}
+public record PracticalAdvice (
+    String identifier,
+    String message,
+    LocalDateTime datetime
+) {}
