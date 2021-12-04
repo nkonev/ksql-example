@@ -27,10 +27,10 @@ public class UserController {
     @PostMapping
     public void postUser(@RequestBody UserDto userDto) throws ExecutionException, InterruptedException {
         KsqlObject row = new KsqlObject()
-                .put("USERID", userDto.getUserId())
-                .put("REGISTERTIME", userDto.getRegistertime())
-                .put("GENDER", userDto.getGender())
-                .put("REGIONID", userDto.getRegionid());
+                .put("USERID", userDto.userId())
+                .put("REGISTERTIME", userDto.registertime())
+                .put("GENDER", userDto.gender())
+                .put("REGIONID", userDto.regionid());
 
         ksqlClient.insertInto("USERS", row).get();
     }
@@ -57,51 +57,3 @@ public class UserController {
     }
 }
 
-class UserDto {
-    private Long userId;
-    private LocalDateTime registertime;
-    private String gender;
-    private String regionid;
-
-    public UserDto() {
-    }
-
-    public UserDto(Long userId, LocalDateTime registertime, String gender, String regionid) {
-        this.userId = userId;
-        this.registertime = registertime;
-        this.gender = gender;
-        this.regionid = regionid;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public LocalDateTime getRegistertime() {
-        return registertime;
-    }
-
-    public void setRegistertime(LocalDateTime registertime) {
-        this.registertime = registertime;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    public String getRegionid() {
-        return regionid;
-    }
-
-    public void setRegionid(String regionid) {
-        this.regionid = regionid;
-    }
-}
