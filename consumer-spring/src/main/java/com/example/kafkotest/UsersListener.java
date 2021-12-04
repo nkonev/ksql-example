@@ -19,7 +19,7 @@ public class UsersListener{
     })
     public void listenAsUser(
             @Header(name = KafkaHeaders.RECEIVED_MESSAGE_KEY, required = false) Long key,
-            @Payload UserChangeDto payload
+            @Payload(required = false) UserChangeDto payload
     ) {
         logger.info("received:  Payload: key {}, {}", key, payload);
     }
