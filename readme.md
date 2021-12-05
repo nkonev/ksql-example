@@ -17,7 +17,7 @@
 * Tombstone and delete https://stackoverflow.com/questions/66305527/how-to-delete-a-value-from-ksqldb-table-or-insert-a-tombstone-value/66314510#66314510
 
 ```
-docker-compose exec ksqldb ksql
+docker exec -it ksqldb ksql
 CREATE STREAM advices_original (identifier varchar, message varchar, datetime varchar) WITH  (kafka_topic='advice-topic', value_format='JSON');
 DESCRIBE EXTENDED advices_original;
 SET 'auto.offset.reset'='earliest';
