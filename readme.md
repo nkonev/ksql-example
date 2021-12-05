@@ -71,7 +71,7 @@ select * from QUERYABLE_USERS_TMP;
 ```
 
 ```
-curl -i 'http://localhost:9088/user'
+curl -Ss 'http://localhost:9088/user' | jq '.'
 curl -i -X PUT -H 'Content-Type: application/json' 'http://localhost:9088/user' -d '{"userId": 567, "registertime": null, "gender": "Male", "regionid": "Moscow"}'
 curl -i -X DELETE 'http://localhost:9088/user/567'
 ```
