@@ -36,8 +36,15 @@ public class UserController {
     }
 
     @GetMapping
-    public List<UserDto> findUser() throws ExecutionException, InterruptedException {
-        BatchedQueryResult batchedQueryResult = ksqlClient.executeQuery("SELECT * from QUERYABLE_USERS;");
+    public List<UserDto> findUser(@RequestParam(required = false) List<Long> userId) throws ExecutionException, InterruptedException {
+        final String ksqlQuery;
+        if (userId == null || userId.isEmpty()) {
+            ksqlQuery = "SELECT * from QUERYABLE_USERS;";
+        } else {
+            String idsByComma = userId.stream().map(String::valueOf).collect(Collectors.joining(","));
+            ksqlQuery = String.format("SELECT * from QUERYABLE_USERS WHERE userid in (%s);", idsByComma);
+        }
+        BatchedQueryResult batchedQueryResult = ksqlClient.executeQuery(ksqlQuery);
         List<Row> rows = batchedQueryResult.get();
         return rows.stream().map(row -> new UserDto(
                 row.getLong("USERID"),
