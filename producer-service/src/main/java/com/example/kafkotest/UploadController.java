@@ -13,6 +13,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 
 @RestController
 public class UploadController {
@@ -27,6 +30,8 @@ public class UploadController {
     @Value("${coordinates.topic-name}")
     private String coordinatesTopicName;
 
+    private static final MathContext mathContext = new MathContext(17, RoundingMode.HALF_UP);
+
     @PostMapping("/upload")
     public void post(MultipartFile file) throws IOException {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
@@ -35,7 +40,8 @@ public class UploadController {
                 String[] values = line.split(COMMA_DELIMITER);
                 // https://yandex.ru/map-constructor/location-tool/?from=club
                 final var carId = values[0];
-                final var coordinatesDto = new CoordinatesDto(Double.parseDouble(values[1]), Double.parseDouble(values[2]));
+
+                final var coordinatesDto = new CoordinatesDto(new BigDecimal(values[1], mathContext), new BigDecimal(values[2], mathContext));
                 final var timestamp = Long.valueOf(values[3]);
                 LOGGER.info("Producing carId={}, coordinatesDto={}", carId, coordinatesDto);
                 kafkaTemplate.send(coordinatesTopicName, null, timestamp, carId, coordinatesDto);

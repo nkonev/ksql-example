@@ -1,7 +1,9 @@
 package io.tpd.kafkaexample;
 
+import java.math.BigDecimal;
+
 public record CoordinatesDto(
-        double latitude,
-        double longitude
+        BigDecimal latitude,
+        BigDecimal longitude
 ) {
 }
