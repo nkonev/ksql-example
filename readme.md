@@ -17,6 +17,10 @@
 * Tombstone and delete https://stackoverflow.com/questions/66305527/how-to-delete-a-value-from-ksqldb-table-or-insert-a-tombstone-value/66314510#66314510
 * https://ksqldb.io/examples.html
 * https://ksqldb.io/quickstart.html
+* https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/scalar-functions/#geo_distance
+* https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/aggregate-functions/#latest_by_offset
+* https://docs.ksqldb.io/en/latest/reference/sql/time/ Time-based operations, like windowing, process records according to the timestamp in ROWTIME. By default, the implicit ROWTIME pseudo column is the timestamp of a message in a Kafka topic. Timestamps have an accuracy of one millisecond.
+
 
 ```
 docker exec -it ksqldb ksql
@@ -87,94 +91,11 @@ INSERT INTO USERS_DELETED (USERID,DUMMY) VALUES (123,CAST(NULL AS VARCHAR));
 ```
 
 # Deal with coordinates
+
+Let's open console and start the query:
 ```
-curl -i 'http://localhost:8099/upload' -F file=@./producer-service/coordinates.csv
+docker exec -it ksqldb ksql
 
-docker exec -it kafka bash
-kafka-console-consumer --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property print.timestamp=true --key-deserializer="org.apache.kafka.common.serialization.StringDeserializer" --topic coordinates
-```
-
-```
-kafka-topics --bootstrap-server localhost:9092 --list
-
-
-CREATE OR REPLACE STREAM IF NOT EXISTS coordinates_stream(
-    carid VARCHAR KEY,
-    latitude DECIMAL(17,15),
-    longitude DECIMAL(17,15)
-) WITH (
-    KAFKA_TOPIC = 'coordinates',
-    KEY_FORMAT='KAFKA',
-    VALUE_FORMAT = 'JSON',
-    PARTITIONS=1,
-    REPLICAS=1
-);
-
--- https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/scalar-functions/#geo_distance
--- https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/aggregate-functions/#latest_by_offset
--- https://docs.ksqldb.io/en/latest/reference/sql/time/ Time-based operations, like windowing, process records according to the timestamp in ROWTIME. By default, the implicit ROWTIME pseudo column is the timestamp of a message in a Kafka topic. Timestamps have an accuracy of one millisecond.
-
-
-SELECT 
-    carid, 
-    GEO_DISTANCE(EARLIEST_BY_OFFSET(latitude), EARLIEST_BY_OFFSET(longitude), LATEST_BY_OFFSET(latitude), LATEST_BY_OFFSET(longitude), 'KM') as distance
-FROM coordinates_stream 
-WINDOW TUMBLING (SIZE 90 SECONDS, GRACE PERIOD 90 DAYS)
-GROUP BY carid
-EMIT CHANGES;
-
-CREATE TABLE TRACKS_TABLE
-AS SELECT 
-    carid, 
-    GEO_DISTANCE(EARLIEST_BY_OFFSET(latitude), EARLIEST_BY_OFFSET(longitude), LATEST_BY_OFFSET(latitude), LATEST_BY_OFFSET(longitude), 'KM') as distance
-FROM coordinates_stream 
-WINDOW TUMBLING (SIZE 90 SECONDS, GRACE PERIOD 90 DAYS)
-GROUP BY carid
-EMIT CHANGES;
-
-
--- CREATE STREAM TRACKS_STREAM AS SELECT carid, distance FROM TRACKS_TABLE EMIT CHANGES;
-
--- select max of distance per 180 sec < threshold
-SELECT 
-    carid, 
-    MAX(distance) AS delta
-FROM TRACKS_TABLE 
-WINDOW TUMBLING (SIZE 180 SECONDS, GRACE PERIOD 90 DAYS)
-GROUP BY carid
-HAVING MAX(distance) < 0.1
-EMIT CHANGES; 
-
-
-
-
-
-
----
-
-SELECT 
-    carid, 
-    COLLECT_LIST(latitude) as latitudes, COLLECT_LIST(longitude) as longitudes
-FROM coordinates_stream 
-WINDOW TUMBLING (SIZE 90 SECONDS, GRACE PERIOD 90 DAYS)
-GROUP BY carid
-EMIT CHANGES;
-
-
-
-
-SELECT 
-    carid, 
-    STDDEV_SAMP(latitude) as latitude_deviation, STDDEV_SAMP(longitude) as longitude_deviation
-FROM coordinates_stream 
-WINDOW TUMBLING (SIZE 90 SECONDS, GRACE PERIOD 90 DAYS)
-GROUP BY carid
-EMIT CHANGES;
-
-
-
--- https://ru.wikipedia.org/wiki/%D0%A1%D1%80%D0%B5%D0%B4%D0%BD%D0%B5%D0%BA%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%BE%D0%B5_%D0%BE%D1%82%D0%BA%D0%BB%D0%BE%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5
--- Use it
 SELECT 
     carid
 FROM coordinates_stream 
@@ -184,29 +105,20 @@ HAVING
     STDDEV_SAMP(CAST (latitude * 100000000000 AS bigint)) < 10 AND 
     STDDEV_SAMP(CAST (longitude * 100000000000 AS bigint)) < 10
 EMIT CHANGES;
-
-
-
-
-
-
-
-
-SELECT 
-    carid, 
-    avg(latitude) as latitude_avg, avg(longitude) as longitude_avg
-FROM coordinates_stream 
-WINDOW TUMBLING (SIZE 90 SECONDS, GRACE PERIOD 90 DAYS)
-GROUP BY carid
-EMIT CHANGES;
-
-
-SELECT 
-    carid, 
-    avg(latitude) as latitude_avg, avg(longitude) as longitude_avg
-FROM coordinates_stream 
-WINDOW TUMBLING (SIZE 90 SECONDS, GRACE PERIOD 90 DAYS)
-GROUP BY carid
-EMIT CHANGES;
-
 ```
+
+Let's POST first portion of coordinates
+```
+curl -i 'http://localhost:8099/upload' -F file=@./producer-service/coordinates1.csv
+docker exec -it kafka bash
+kafka-console-consumer --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property print.timestamp=true --key-deserializer="org.apache.kafka.common.serialization.StringDeserializer" --topic coordinates
+```
+
+
+We see car 1 stops.
+Now let's issue the second query
+```
+curl -i 'http://localhost:8099/upload' -F file=@./producer-service/coordinates2.csv
+```
+
+We see second car stop
