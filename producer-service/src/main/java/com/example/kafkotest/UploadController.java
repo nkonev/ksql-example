@@ -36,8 +36,9 @@ public class UploadController {
                 // https://yandex.ru/map-constructor/location-tool/?from=club
                 final var carId = values[0];
                 final var coordinatesDto = new CoordinatesDto(Double.parseDouble(values[1]), Double.parseDouble(values[2]));
+                final var timestamp = Long.valueOf(values[3]);
                 LOGGER.info("Producing carId={}, coordinatesDto={}", carId, coordinatesDto);
-                kafkaTemplate.send(coordinatesTopicName, carId, coordinatesDto);
+                kafkaTemplate.send(coordinatesTopicName, null, timestamp, carId, coordinatesDto);
             }
         }
     }

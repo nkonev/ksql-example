@@ -88,7 +88,7 @@ INSERT INTO USERS_DELETED (USERID,DUMMY) VALUES (123,CAST(NULL AS VARCHAR));
 curl -i 'http://localhost:8099/upload' -F file=@./producer-service/coordinates.csv
 
 docker exec -it kafka bash
-kafka-console-consumer --bootstrap-server localhost:9092 --from-beginning --property print.key=true --key-deserializer="org.apache.kafka.common.serialization.StringDeserializer" --topic coordinates
-
-
+kafka-console-consumer --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property print.timestamp=true --key-deserializer="org.apache.kafka.common.serialization.StringDeserializer" --topic coordinates
 ```
+
+Points -> distances
