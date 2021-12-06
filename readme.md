@@ -92,4 +92,26 @@ docker exec -it kafka bash
 kafka-console-consumer --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property print.timestamp=true --key-deserializer="org.apache.kafka.common.serialization.StringDeserializer" --topic coordinates
 ```
 
-Points -> distances
+```
+kafka-topics --bootstrap-server localhost:9092 --list
+
+
+CREATE STREAM IF NOT EXISTS coordinates_stream(
+    carid VARCHAR KEY,
+    latitude DOUBLE,
+    longitude DOUBLE
+) WITH (
+    KAFKA_TOPIC = 'coordinates',
+    KEY_FORMAT='KAFKA',
+    VALUE_FORMAT = 'JSON',
+    PARTITIONS=1,
+    REPLICAS=1
+);
+
+SELECT carid, count(*) FROM coordinates_stream 
+WINDOW TUMBLING (SIZE 60 SECONDS)
+GROUP BY carid
+EMIT CHANGES;
+
+
+```
