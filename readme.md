@@ -108,10 +108,23 @@ CREATE STREAM IF NOT EXISTS coordinates_stream(
     REPLICAS=1
 );
 
-SELECT carid, count(*) FROM coordinates_stream 
-WINDOW TUMBLING (SIZE 60 SECONDS, GRACE PERIOD 90 DAYS)
+-- https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/scalar-functions/#geo_distance
+-- https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/aggregate-functions/#latest_by_offset
+
+SELECT 
+    carid, 
+    GEO_DISTANCE(EARLIEST_BY_OFFSET(latitude), EARLIEST_BY_OFFSET(longitude), LATEST_BY_OFFSET(latitude), LATEST_BY_OFFSET(longitude), 'KM') as distance
+FROM coordinates_stream 
+WINDOW TUMBLING (SIZE 90 SECONDS, GRACE PERIOD 90 DAYS)
 GROUP BY carid
 EMIT CHANGES;
 
 
+SELECT 
+    carid, 
+    COLLECT_LIST(latitude) as latitudes, COLLECT_LIST(longitude) as longitudes
+FROM coordinates_stream 
+WINDOW TUMBLING (SIZE 90 SECONDS, GRACE PERIOD 90 DAYS)
+GROUP BY carid
+EMIT CHANGES;
 ```
