@@ -15,6 +15,8 @@
 * Primary key behaviour https://docs.ksqldb.io/en/latest/reference/sql/data-definition/
 * Tombstone https://rmoff.net/2020/11/03/kafka-connect-ksqldb-and-kafka-tombstone-messages/
 * Tombstone and delete https://stackoverflow.com/questions/66305527/how-to-delete-a-value-from-ksqldb-table-or-insert-a-tombstone-value/66314510#66314510
+* https://ksqldb.io/examples.html
+* https://ksqldb.io/quickstart.html
 
 ```
 docker exec -it ksqldb ksql
