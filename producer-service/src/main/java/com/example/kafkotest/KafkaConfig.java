@@ -22,6 +22,9 @@ public class KafkaConfig {
     @Value("${tpd.topic-name}")
     private String topicName;
 
+    @Value("${coordinates.topic-name}")
+    private String coordinatesTopicName;
+
     @Bean
     public ConcurrentKafkaListenerContainerFactory<?, ?> kafkaListenerContainerFactory(
             ConcurrentKafkaListenerContainerFactoryConfigurer configurer,
@@ -36,6 +39,11 @@ public class KafkaConfig {
     @Bean
     public NewTopic adviceTopic() {
         return new NewTopic(topicName, 1, (short) 1);
+    }
+
+    @Bean
+    public NewTopic coordinatesTopic() {
+        return new NewTopic(coordinatesTopicName, 1, (short) 1);
     }
 
 }

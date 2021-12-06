@@ -1,4 +1,6 @@
 #logging.level.org.springframework.kafka.listener: DEBUG
+server:
+  port: 8099
 
 spring:
   kafka:
@@ -18,3 +20,6 @@ spring:
 
 tpd:
   topic-name: advice-topic
+
+coordinates:
+  topic-name: coordinates
