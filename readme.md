@@ -64,6 +64,7 @@ kafka-topics --bootstrap-server localhost:9092 --list
 7. Is offset possible in Kafka Stream / KSQL ? - No. If a node dies, all of those messages have to be replayed from the topic and inserted into the database. It’s only once all of these mutations are done that the processing can start again. https://www.jesse-anderson.com/2019/10/why-i-recommend-my-clients-not-use-ksql-and-kafka-streams/
   Because of this KSQL queries are not replacements for `@KafkaListener`
 8. Because KSQL is designed for transform data (T in ETL) https://habr.com/en/company/neoflex/blog/593769/
+9. Given this, if we need consumer group offset semantic for newly created stream (stopped cars) we need to sent its events to the new stream, then read them from it
 
 # Deal with users
 ```
@@ -100,7 +101,7 @@ Let's open console and start the query:
 docker exec -it ksqldb ksql
 
 SELECT 
-    carid
+    carid, LATEST_BY_OFFSET(cast (latitude as double)) as latitude, LATEST_BY_OFFSET(cast(longitude as double)) as longitude
 FROM coordinates_stream 
     WINDOW TUMBLING (SIZE 90 SECONDS, GRACE PERIOD 90 DAYS)
 GROUP BY carid
@@ -108,6 +109,10 @@ HAVING
     STDDEV_SAMP(CAST (latitude * 100000000000 AS bigint)) < 10 AND 
     STDDEV_SAMP(CAST (longitude * 100000000000 AS bigint)) < 10
 EMIT CHANGES;
+```
+
+```
+date -d '@1638797250000'
 ```
 
 Let's POST first portion of coordinates
