@@ -76,8 +76,8 @@ INSERT INTO users (userid, registertime, gender, regionid) VALUES (123, 15109232
 INSERT INTO users (userid, registertime, gender, regionid) VALUES (123, 1510923225000, 'MMM', 'Moscow');
 INSERT INTO users (userid, registertime, gender, regionid) VALUES (234, 1510923999000, 'F', 'Yekaterinburg');
 
-CREATE TABLE QUERYABLE_USERS_TMP AS SELECT * FROM USERS;
-select * from QUERYABLE_USERS_TMP;
+CREATE TABLE USERS_QUERYABLE_TMP AS SELECT * FROM USERS;
+select * from USERS_QUERYABLE_TMP;
 ```
 
 ```
@@ -88,7 +88,7 @@ curl -i -X DELETE 'http://localhost:9088/user/567'
 ```
 
 ```
-select * from QUERYABLE_USERS;
+select * from USERS_QUERYABLE;
 
 INSERT INTO USERS_DELETED (USERID,DUMMY) VALUES (123,CAST(NULL AS VARCHAR));
 ```
