@@ -130,3 +130,8 @@ curl -i 'http://localhost:8099/upload' -F file=@./producer-service/coordinates2.
 ```
 
 We see second car stop
+
+Programmatically, we can read from topic with any consumer:
+```
+kafka-console-consumer --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property print.timestamp=true --topic stopped_cars
+```
