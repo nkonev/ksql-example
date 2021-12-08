@@ -101,7 +101,7 @@ Let's open console and start the query:
 docker exec -it ksqldb ksql
 
 SELECT 
-    carid, LATEST_BY_OFFSET(cast (latitude as double)) as latitude, LATEST_BY_OFFSET(cast(longitude as double)) as longitude
+    carid, cast(carid as string) as car, LATEST_BY_OFFSET(cast (latitude as double)) as latitude, LATEST_BY_OFFSET(cast(longitude as double)) as longitude
 FROM coordinates_stream 
     WINDOW TUMBLING (SIZE 90 SECONDS, GRACE PERIOD 90 DAYS)
 GROUP BY carid

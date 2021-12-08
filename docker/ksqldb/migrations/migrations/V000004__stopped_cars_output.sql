@@ -5,7 +5,8 @@ CREATE OR REPLACE TABLE  stopped_cars_output_table WITH (
               PARTITIONS=1,
               REPLICAS=1
 )
-AS SELECT carid, LATEST_BY_OFFSET(cast (latitude as double)) as latitude, LATEST_BY_OFFSET(cast(longitude as double)) as longitude
+-- we cannot consume carid key because it contains trash symbols so we put key into value with AS_VALUE function
+AS SELECT carid, AS_VALUE(carid) as car, LATEST_BY_OFFSET(cast (latitude as double)) as latitude, LATEST_BY_OFFSET(cast(longitude as double)) as longitude
 FROM coordinates_stream
             WINDOW TUMBLING (SIZE 90 SECONDS, GRACE PERIOD 90 DAYS)
 GROUP BY carid
