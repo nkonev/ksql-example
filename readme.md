@@ -22,6 +22,13 @@
 * https://docs.ksqldb.io/en/latest/reference/sql/time/ Time-based operations, like windowing, process records according to the timestamp in ROWTIME. By default, the implicit ROWTIME pseudo column is the timestamp of a message in a Kafka topic. Timestamps have an accuracy of one millisecond.
 * https://davidxiang.com/2021/01/10/kafka-as-a-database/
 
+# Migrations
+```
+make migrate-init
+make migrate
+```
+
+# See advices (demo)
 ```
 docker exec -it ksqldb ksql
 CREATE STREAM advices_original (identifier varchar, message varchar, datetime varchar) WITH  (kafka_topic='advice-topic', value_format='JSON');
@@ -33,18 +40,6 @@ SELECT * FROM advices_original EMIT CHANGES;
 SET 'auto.offset.reset'='earliest';
 SELECT * FROM advices_original where identifier='900000' EMIT CHANGES;
 ...and wait > 30 seconds.
-```
-
-# Initializing migrations from host
-```
-docker run -v $PWD/docker/ksqldb/migrations:/share/ksql-migrations confluentinc/ksqldb-server:0.22.0 ksql-migrations new-project /share/ksql-migrations http://host.docker.internal:8088
-```
-
-# Apply migration from host
-```
-docker run -v $PWD/docker/ksqldb/migrations:/share/ksql-migrations confluentinc/ksqldb-server:0.22.0 ksql-migrations --config-file /share/ksql-migrations/ksql-migrations.properties initialize-metadata
-
-docker run -v $PWD/docker/ksqldb/migrations:/share/ksql-migrations confluentinc/ksqldb-server:0.22.0 ksql-migrations --config-file /share/ksql-migrations/ksql-migrations.properties apply --all
 ```
 
 # Check topic is present after migration
