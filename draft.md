@@ -21,6 +21,7 @@
 * https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/aggregate-functions/#latest_by_offset
 * https://docs.ksqldb.io/en/latest/reference/sql/time/ Time-based operations, like windowing, process records according to the timestamp in ROWTIME. By default, the implicit ROWTIME pseudo column is the timestamp of a message in a Kafka topic. Timestamps have an accuracy of one millisecond.
 * https://davidxiang.com/2021/01/10/kafka-as-a-database/
+* https://docs.ksqldb.io/en/latest/developer-guide/joins/join-streams-and-tables/
 
 ```
 SELECT 
