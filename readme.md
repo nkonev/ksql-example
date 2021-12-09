@@ -1,3 +1,5 @@
+# [KRaft](https://github.com/apache/kafka/blob/trunk/config/kraft/README.md) (KIP-500) Kafka without Zookeeper + KSQLDB example
+
 # Presentation plan
 0. Kafka is consists of several apis (Producer-Consumer, Stream, Connect, ...) [![image](.markdown/api.png)](https://kafka.apache.org/documentation/)
 
