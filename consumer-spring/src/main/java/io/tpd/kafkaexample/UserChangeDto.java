@@ -2,11 +2,11 @@ package io.tpd.kafkaexample;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record UserChangeDto (
     @JsonProperty("REGISTERTIME")
-    LocalDateTime registerTime,
+    Instant registerTime,
     @JsonProperty("GENDER")
     String gender,
     @JsonProperty("REGIONID")
