@@ -1,3 +1,27 @@
+# KSQL
+* https://docs.confluent.io/current/ksql/docs/developer-guide/syntax-reference.html
+* https://blog.knoldus.com/ksql-streams-and-tables/
+* https://blog.knoldus.com/ksql-getting-started-with-streaming-sql-for-apache-kafka/
+* https://www.confluent.io/blog/troubleshooting-ksql-part-1/#later-offset
+* https://docs.ksqldb.io/en/latest/tutorials/event-driven-microservice/
+* https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-clients/java-client/#event-driven-microservice
+* https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-clients/java-client/
+* https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/select-pull-query/
+* https://docs.ksqldb.io/en/latest/operate-and-deploy/migrations-tool/
+* https://docs.ksqldb.io/en/latest/concepts/queries/
+* https://docs.ksqldb.io/en/v0.7.0-ksqldb/developer-guide/create-a-table/
+* https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/create-table/
+* https://docs.ksqldb.io/en/latest/how-to-guides/update-a-running-persistent-query/
+* Primary key behaviour https://docs.ksqldb.io/en/latest/reference/sql/data-definition/
+* Tombstone https://rmoff.net/2020/11/03/kafka-connect-ksqldb-and-kafka-tombstone-messages/
+* Tombstone and delete https://stackoverflow.com/questions/66305527/how-to-delete-a-value-from-ksqldb-table-or-insert-a-tombstone-value/66314510#66314510
+* https://ksqldb.io/examples.html
+* https://ksqldb.io/quickstart.html
+* https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/scalar-functions/#geo_distance
+* https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/aggregate-functions/#latest_by_offset
+* https://docs.ksqldb.io/en/latest/reference/sql/time/ Time-based operations, like windowing, process records according to the timestamp in ROWTIME. By default, the implicit ROWTIME pseudo column is the timestamp of a message in a Kafka topic. Timestamps have an accuracy of one millisecond.
+* https://davidxiang.com/2021/01/10/kafka-as-a-database/
+
 ```
 SELECT 
     carid, 

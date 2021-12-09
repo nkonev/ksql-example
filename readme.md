@@ -1,26 +1,22 @@
-# KSQL
-* https://docs.confluent.io/current/ksql/docs/developer-guide/syntax-reference.html
-* https://blog.knoldus.com/ksql-streams-and-tables/
-* https://blog.knoldus.com/ksql-getting-started-with-streaming-sql-for-apache-kafka/
-* https://www.confluent.io/blog/troubleshooting-ksql-part-1/#later-offset
-* https://docs.ksqldb.io/en/latest/tutorials/event-driven-microservice/
-* https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-clients/java-client/#event-driven-microservice
-* https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-clients/java-client/
-* https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/select-pull-query/
-* https://docs.ksqldb.io/en/latest/operate-and-deploy/migrations-tool/
-* https://docs.ksqldb.io/en/latest/concepts/queries/
-* https://docs.ksqldb.io/en/v0.7.0-ksqldb/developer-guide/create-a-table/
-* https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/create-table/
-* https://docs.ksqldb.io/en/latest/how-to-guides/update-a-running-persistent-query/
-* Primary key behaviour https://docs.ksqldb.io/en/latest/reference/sql/data-definition/
-* Tombstone https://rmoff.net/2020/11/03/kafka-connect-ksqldb-and-kafka-tombstone-messages/
-* Tombstone and delete https://stackoverflow.com/questions/66305527/how-to-delete-a-value-from-ksqldb-table-or-insert-a-tombstone-value/66314510#66314510
-* https://ksqldb.io/examples.html
-* https://ksqldb.io/quickstart.html
-* https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/scalar-functions/#geo_distance
-* https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/aggregate-functions/#latest_by_offset
-* https://docs.ksqldb.io/en/latest/reference/sql/time/ Time-based operations, like windowing, process records according to the timestamp in ROWTIME. By default, the implicit ROWTIME pseudo column is the timestamp of a message in a Kafka topic. Timestamps have an accuracy of one millisecond.
-* https://davidxiang.com/2021/01/10/kafka-as-a-database/
+# Presentation plan
+0. Kafka is consists of several apis (Producer-Consumer, Stream, Connect, ...) [![image](.markdown/api.png)](https://kafka.apache.org/documentation/)
+
+
+KSQLDB uses [Stream API](https://docs.confluent.io/5.0.4/streams/faq.html).
+
+1. There are [3 kind of queries](https://docs.ksqldb.io/en/latest/concepts/queries/): persistent, push, and pull. Persistent queries are server-side queries that run indefinitely processing rows of events. You issue persistent queries by deriving new streams and new tables from existing streams or tables. (CREATE STREAM AS SELECT, CREATE TABLE AS SELECT) https://docs.ksqldb.io/en/latest/concepts/queries/
+2. What is stream. A stream is a partitioned, immutable, append-only collection that represents a series of historical facts. For example, the rows of a stream could model a sequence of financial transactions, like "Alice sent $100 to Bob", followed by "Charlie sent $50 to Bob".
+3. What is table. A table is a mutable, partitioned collection that models change over time. In contrast with a stream, which represents a historical sequence of events, a table represents what is true as of "now". For example, you might use a table to model the locations where someone has lived as a stream: first Miami, then New York, then London, and so forth.
+4. [Pull select](https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/select-pull-query/) (from table, for request/response) - a client pulls a table. Pulls the current value from the materialized view and terminates. The result of this statement is not persisted in a Kafka topic. By default, only key is supported in `WHERE` clause https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/select-pull-query/#where-clause-guidelines.
+5. [Push select](https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/select-push-query/) (from stream, for subscription on changes) - a stream pushes to client. The result of this statement isn't persisted in a Kafka topic. Unlike persistent queries, push queries are not shared. If multiple clients submit the same push query, ksqlDB computes independent results for each client.
+6. [Window types](https://docs.ksqldb.io/en/latest/concepts/time-and-windows-in-ksqldb-queries/#window-types)
+   When using windows in your SQL queries, aggregate functions are applied only to the records that occur within a specific time window. Records that arrive out-of-order are handled as you might expect: although the window end time has passed, the out-of-order records are still associated with the correct window.
+![window](.markdown/windows.png)
+
+7. Is offset possible in Kafka Stream / KSQL ? - No. If a node dies, all of those messages have to be replayed from the topic and inserted into the database. It’s only once all of these mutations are done that the processing can start again. https://www.jesse-anderson.com/2019/10/why-i-recommend-my-clients-not-use-ksql-and-kafka-streams/
+  Because of this KSQL queries are not replacements for `@KafkaListener`
+8. Because KSQL is designed for transform data (T in ETL) https://habr.com/en/company/neoflex/blog/593769/
+9. Given this, if we need consumer group offset semantic for newly created stream (stopped cars) we need to sent its events to the new stream, then read them from it
 
 # Migrations
 ```
@@ -47,19 +43,6 @@ SELECT * FROM advices_original where identifier='900000' EMIT CHANGES;
 docker exec -it kafka bash
 kafka-topics --bootstrap-server localhost:9092 --list
 ```
-
-# Presentation plan
-0. Kafka is consists of several apis (Producer-Consumer, Stream, Connect). KSQLDB uses [Stream](https://docs.confluent.io/5.0.4/streams/faq.html).
-1. There are 3 kind of queries: persistent, push, and pull. Persistent queries are server-side queries that run indefinitely processing rows of events. You issue persistent queries by deriving new streams and new tables from existing streams or tables. (CREATE STREAM AS SELECT, CREATE TABLE AS SELECT) https://docs.ksqldb.io/en/latest/concepts/queries/
-2. What is stream. A stream is a partitioned, immutable, append-only collection that represents a series of historical facts. For example, the rows of a stream could model a sequence of financial transactions, like "Alice sent $100 to Bob", followed by "Charlie sent $50 to Bob".
-3. What is table. A table is a mutable, partitioned collection that models change over time. In contrast with a stream, which represents a historical sequence of events, a table represents what is true as of "now". For example, you might use a table to model the locations where someone has lived as a stream: first Miami, then New York, then London, and so forth.
-4. Pull select https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/select-pull-query/ (from table, for request/response) - a client pulls a table. Pulls the current value from the materialized view and terminates. The result of this statement is not persisted in a Kafka topic. By default, only key is supported in `WHERE` clause https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/select-pull-query/#where-clause-guidelines.
-5. Push select https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/select-push-query/ (from stream, for subscription on changes) - a stream pushes to client. The result of this statement isn't persisted in a Kafka topic. Unlike persistent queries, push queries are not shared. If multiple clients submit the same push query, ksqlDB computes independent results for each client.
-6. Window types https://docs.ksqldb.io/en/latest/concepts/time-and-windows-in-ksqldb-queries/#window-types
-7. Is offset possible in Kafka Stream / KSQL ? - No. If a node dies, all of those messages have to be replayed from the topic and inserted into the database. It’s only once all of these mutations are done that the processing can start again. https://www.jesse-anderson.com/2019/10/why-i-recommend-my-clients-not-use-ksql-and-kafka-streams/
-  Because of this KSQL queries are not replacements for `@KafkaListener`
-8. Because KSQL is designed for transform data (T in ETL) https://habr.com/en/company/neoflex/blog/593769/
-9. Given this, if we need consumer group offset semantic for newly created stream (stopped cars) we need to sent its events to the new stream, then read them from it
 
 # Deal with users
 ```
