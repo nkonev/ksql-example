@@ -141,3 +141,4 @@ kafka-console-consumer --bootstrap-server localhost:9092 --from-beginning --prop
 * https://davidxiang.com/2021/01/10/kafka-as-a-database/
 * https://docs.ksqldb.io/en/latest/developer-guide/joins/join-streams-and-tables/
 * Persistence of KSQLDB across container restarts https://www.confluent.io/blog/serverless-event-stream-processing/
+* https://www.confluent.io/blog/guide-to-stream-processing-and-ksqldb-fundamentals/
