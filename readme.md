@@ -117,6 +117,7 @@ kafka-console-consumer --bootstrap-server localhost:9092 --from-beginning --prop
 ```
 
 # Literature
+* https://docs.confluent.io/platform/7.0.1/installation/docker/installation.html#considerations
 * https://docs.confluent.io/current/ksql/docs/developer-guide/syntax-reference.html
 * https://blog.knoldus.com/ksql-streams-and-tables/
 * https://blog.knoldus.com/ksql-getting-started-with-streaming-sql-for-apache-kafka/
