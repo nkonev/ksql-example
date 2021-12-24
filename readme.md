@@ -19,6 +19,7 @@ KSQLDB uses [Stream API](https://docs.confluent.io/5.0.4/streams/faq.html).
   Because of this KSQL queries are not replacements for `@KafkaListener`
 8. Because KSQL is designed for transform data (T in ETL) https://habr.com/en/company/neoflex/blog/593769/
 9. Given this, if we need consumer group offset semantic for newly created stream (stopped cars) we need to sent its events to the new stream, then read them from nes stream's backing topic
+10. Alternatively, We can first [backfill](https://www.confluent.io/blog/push-queries-v2-with-ksqldb-scalable-sql-query-subscriptions/) the data with a pull query (ksqlDB’s equivalent of a point-in-time query), and then issue the following push query to display just equities where the total trade value is greater than 1,000...
 
 # Migrations
 ```
