@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   kafka:
-    image: confluentinc/cp-kafka:7.0.0
+    image: confluentinc/cp-kafka:7.0.1
     container_name: kafka
     restart: unless-stopped
     ports:
@@ -33,7 +33,7 @@ services:
 
   # https://docs.confluent.io/current/ksql/docs/installation/install-ksql-with-docker.html
   ksqldb:
-    image: confluentinc/ksqldb-server:0.22.0
+    image: confluentinc/cp-ksqldb-server:7.0.1
     container_name: ksqldb
     restart: unless-stopped
     ports:
