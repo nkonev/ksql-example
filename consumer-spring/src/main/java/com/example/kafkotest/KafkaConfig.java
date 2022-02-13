@@ -22,6 +22,9 @@ public class KafkaConfig {
     @Value("${tpd.topic-name}")
     private String topicName;
 
+    @Value("${tpd.users-topic-name}")
+    private String usersTopicName;
+
     @Bean
     public ConcurrentKafkaListenerContainerFactory<?, ?> kafkaListenerContainerFactory(
             ConcurrentKafkaListenerContainerFactoryConfigurer configurer,
@@ -35,7 +38,12 @@ public class KafkaConfig {
 
     @Bean
     public NewTopic adviceTopic() {
-        return new NewTopic(topicName, 1, (short) 1);
+        return new NewTopic(topicName, 4, (short) 1);
+    }
+
+    @Bean
+    public NewTopic usersTopic() {
+        return new NewTopic(usersTopicName, 4, (short) 1);
     }
 
 }

@@ -31,7 +31,7 @@ make migrate
 ```
 docker exec -it ksqldb ksql
 CREATE STREAM advices_original (identifier varchar, message varchar, datetime varchar) WITH  (kafka_topic='advice-topic', value_format='JSON');
-DESCRIBE EXTENDED advices_original;
+DESCRIBE advices_original;
 SET 'auto.offset.reset'='earliest';
 SELECT * FROM advices_original EMIT CHANGES;
 ...and wait > 30 seconds
@@ -44,13 +44,13 @@ SELECT * FROM advices_original where identifier='900000' EMIT CHANGES;
 # Check topic is present after migration
 ```
 docker exec -it kafka bash
-kafka-topics --bootstrap-server localhost:9092 --list
+kafka-topics.sh --bootstrap-server localhost:9092 --list
 ```
 
 # Deal with users
 ```
 docker exec -it kafka bash
-kafka-console-consumer --bootstrap-server localhost:9092 --from-beginning --property print.key=true --key-deserializer="org.apache.kafka.common.serialization.LongDeserializer" --topic users
+kafka-console-consumer.sh --bootstrap-server localhost:9092 --from-beginning --property print.key=true --key-deserializer="org.apache.kafka.common.serialization.LongDeserializer" --topic users
 
 in another terminal:
 docker exec -it ksqldb ksql
@@ -100,7 +100,7 @@ Let's POST first portion of coordinates
 ```
 curl -i 'http://localhost:8099/upload' -F file=@./producer-service/coordinates1.csv
 docker exec -it kafka bash
-kafka-console-consumer --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property print.timestamp=true --key-deserializer="org.apache.kafka.common.serialization.StringDeserializer" --topic coordinates
+kafka-console-consumer.sh --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property print.timestamp=true --key-deserializer="org.apache.kafka.common.serialization.StringDeserializer" --topic coordinates
 ```
 
 
@@ -114,7 +114,7 @@ We see second car stop
 
 Programmatically, we can read from topic with any consumer:
 ```
-kafka-console-consumer --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property print.timestamp=true --topic stopped_cars
+kafka-console-consumer.sh --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property print.timestamp=true --topic stopped_cars
 ```
 
 # Literature

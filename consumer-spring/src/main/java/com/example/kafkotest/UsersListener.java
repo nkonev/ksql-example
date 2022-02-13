@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class UsersListener{
     private static final Logger logger = LoggerFactory.getLogger(UsersListener.class);
 
-    @KafkaListener(topics = "users", clientIdPrefix = "json-users", properties = {
+    @KafkaListener(topics = "${tpd.users-topic-name}", clientIdPrefix = "json-users", properties = {
             "spring.json.value.default.type=io.tpd.kafkaexample.UserChangeDto",
             "key.deserializer=org.apache.kafka.common.serialization.LongDeserializer",
     })
