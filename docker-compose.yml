@@ -10,7 +10,7 @@ services:
       - "9092:9092"
     volumes:
       - ./docker/kafka/entrypoint.sh:/sbin/entrypoint.sh:z
-      - kafka_data:/tmp/kafka-data:z
+      - kafka_data:/var/lib/kafka-data:z
       - ./docker/kafka/server.properties:/opt/bitnami/kafka/config/kraft/server.properties:z
     # https://github.com/confluentinc/cp-all-in-one/blob/7.0.0-post/cp-all-in-one-kraft/docker-compose.yml
     entrypoint: /sbin/entrypoint.sh

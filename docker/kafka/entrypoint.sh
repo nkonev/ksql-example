@@ -1,6 +1,6 @@
 #!/bin/bash
 
-format_done=/tmp/kafka-data/format_done
+format_done=/var/lib/kafka-data/format_done
 
 if [[ ! -f $format_done ]]; then
   echo "Will format kafka-storage for KRaft"
