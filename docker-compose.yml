@@ -5,29 +5,13 @@ services:
     image: bitnami/kafka:3.1.0-debian-10-r18
     container_name: kafka
     restart: unless-stopped
+    user: "0"
     ports:
       - "9092:9092"
-    environment:
-      ALLOW_PLAINTEXT_LISTENER: "yes"
-      KAFKA_BROKER_ID: 1
-      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
-      KAFKA_CFG_ADVERTISED_LISTENERS: 'INTERNAL://kafka:29092,PLAINTEXT_HOST://127.0.0.1:9092'
-      KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_CFG_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
-      KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR: 1
-      KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-      KAFKA_CFG_JMX_PORT: 9101
-      KAFKA_CFG_JMX_HOSTNAME: localhost
-      KAFKA_CFG_PROCESS_ROLES: 'broker,controller'
-      KAFKA_CFG_NODE_ID: 1
-      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: '1@kafka:29093'
-      KAFKA_CFG_LISTENERS: 'INTERNAL://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://:9092'
-      KAFKA_CFG_INTER_BROKER_LISTENER_NAME: 'INTERNAL'
-      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
     volumes:
       - ./docker/kafka/entrypoint.sh:/sbin/entrypoint.sh:z
-      - kafka_data:/bitnami/kafka:z
-#      - kafka_kraft_data:/tmp/kraft-combined-logs:z
+      - kafka_data:/tmp/kafka-data:z
+      - ./docker/kafka/server.properties:/opt/bitnami/kafka/config/kraft/server.properties:z
     # https://github.com/confluentinc/cp-all-in-one/blob/7.0.0-post/cp-all-in-one-kraft/docker-compose.yml
     entrypoint: /sbin/entrypoint.sh
 
