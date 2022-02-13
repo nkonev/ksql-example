@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   kafka:
-    image: confluentinc/cp-kafka:7.0.1
+    image: bitnami/kafka:3.0.0-debian-10-r97
     container_name: kafka
     restart: unless-stopped
     ports:
@@ -23,11 +23,10 @@ services:
       KAFKA_LISTENERS: 'INTERNAL://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://:9092'
       KAFKA_INTER_BROKER_LISTENER_NAME: 'INTERNAL'
       KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
-      KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: 'false'
     volumes:
       - ./docker/kafka/entrypoint.sh:/sbin/entrypoint.sh:z
-      - kafka_data:/var/lib/kafka/data:z
-      - confluent_config_data:/etc/confluent/docker:z
+      - kafka_data:/bitnami/kafka:z
+#      - kafka_kraft_data:/tmp/kraft-combined-logs:z
     # https://github.com/confluentinc/cp-all-in-one/blob/7.0.0-post/cp-all-in-one-kraft/docker-compose.yml
     entrypoint: /sbin/entrypoint.sh
 
@@ -61,4 +60,4 @@ services:
 
 volumes:
   kafka_data:
-  confluent_config_data:
+  kafka_kraft_data:
