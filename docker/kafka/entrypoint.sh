@@ -4,7 +4,7 @@
 . /opt/bitnami/scripts/liblog.sh
 . /opt/bitnami/scripts/libkafka.sh
 
-config_done=/var/lib/kafka-data/config_done
+config_done=/opt/bitnami/kafka/config/kraft/config_done
 
 if [[ ! -f $config_done ]]; then
   echo "Will edit config"
