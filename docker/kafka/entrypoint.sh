@@ -34,6 +34,7 @@ else
   echo "kafka-storage is already formatted, skipping"
 fi
 
+export PATH=${PATH}:/opt/bitnami/kafka/bin
 
 echo "Starting non-original run script"
 exec /opt/bitnami/kafka/bin/kafka-server-start.sh /opt/bitnami/kafka/config/kraft/server.properties
