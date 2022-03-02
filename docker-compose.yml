@@ -60,4 +60,3 @@ services:
 
 volumes:
   kafka_data:
-  kafka_kraft_data:
