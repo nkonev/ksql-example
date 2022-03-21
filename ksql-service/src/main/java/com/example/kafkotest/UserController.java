@@ -39,7 +39,7 @@ public class UserController {
     public List<UserDto> findUser(@RequestParam(required = false) List<Long> userId) throws ExecutionException, InterruptedException {
         final String ksqlQuery;
         if (userId == null || userId.isEmpty()) {
-            ksqlQuery = "SELECT * from USERS_QUERYABLE;";
+            ksqlQuery = "SELECT * from USERS_QUERYABLE LIMIT 10;";
         } else {
             String idsByComma = userId.stream().map(String::valueOf).collect(Collectors.joining(","));
             ksqlQuery = String.format("SELECT * from USERS_QUERYABLE WHERE userid in (%s);", idsByComma);

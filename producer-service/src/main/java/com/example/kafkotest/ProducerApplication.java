@@ -33,7 +33,7 @@ public class ProducerApplication {
 
 	private static final AtomicLong al = new AtomicLong();
 
-	@Scheduled(cron = "* * * * * *")
+	// @Scheduled(cron = "* * * * * *")
 	public void run() {
 		long longValue = al.incrementAndGet();
 		logger.info("Producing {}", longValue);
