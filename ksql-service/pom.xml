@@ -36,7 +36,7 @@
         <dependency>
             <groupId>io.confluent.ksql</groupId>
             <artifactId>ksqldb-api-client</artifactId>
-            <version>0.24.0</version>
+            <version>0.25.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -52,7 +52,7 @@
         <dependency>
             <groupId>io.confluent.ksql</groupId>
             <artifactId>ksqldb-udf</artifactId>
-            <version>0.24.0</version>
+            <version>0.25.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>

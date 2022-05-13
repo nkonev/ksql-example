@@ -17,6 +17,7 @@ class AdviceReader implements KsqldbClientCustomizer {
     public void accept(Client client) {
         client.streamQuery("SELECT * FROM advices_original EMIT CHANGES;")
                 .thenAccept(streamedQueryResult -> {
+                    // https://www.confluent.io/blog/announcing-ksqldb-0-25-1/#at-least-once-semantics
                     LOGGER.info("Query has started. Query ID: " + streamedQueryResult.queryID());
                     RowSubscriber subscriber = new RowSubscriber();
                     streamedQueryResult.subscribe(subscriber);
@@ -24,6 +25,7 @@ class AdviceReader implements KsqldbClientCustomizer {
                     LOGGER.error("Request failed: " + e);
                     return null;
                 });
+
     }
 }
 
