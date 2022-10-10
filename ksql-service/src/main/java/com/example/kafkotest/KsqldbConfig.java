@@ -32,5 +32,3 @@ public class KsqldbConfig {
         return client;
     }
 }
-
-interface KsqldbClientCustomizer extends Consumer<Client> {}
