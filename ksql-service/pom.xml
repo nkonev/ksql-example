@@ -37,24 +37,6 @@
             <groupId>io.confluent.ksql</groupId>
             <artifactId>ksqldb-api-client</artifactId>
             <version>0.28.2</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-reload4j</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>io.confluent</groupId>
-                    <artifactId>confluent-log4j</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>io.confluent</groupId>
-                    <artifactId>logredactor</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>io.vertx</groupId>
-                    <artifactId>vertx-codegen</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <!-- It's need for ksqldb-api-client -->
         <dependency>
