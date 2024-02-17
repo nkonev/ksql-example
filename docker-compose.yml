@@ -16,15 +16,13 @@ services:
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-      KAFKA_JMX_PORT: 9101
-      KAFKA_JMX_HOSTNAME: localhost
       KAFKA_PROCESS_ROLES: 'broker,controller'
       KAFKA_NODE_ID: 1
       KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:29093'
       KAFKA_LISTENERS: 'INTERNAL://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://:9092'
       KAFKA_INTER_BROKER_LISTENER_NAME: 'INTERNAL'
       KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
-      KAFKA_LOG_DIRS: "/var/lib/kafka-data/kraft"
+      KAFKA_LOG_DIRS: "/var/lib/kafka-data"
     volumes:
       - kafka_data:/var/lib/kafka-data:z
   # https://docs.confluent.io/current/ksql/docs/installation/install-ksql-with-docker.html
