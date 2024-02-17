@@ -6,7 +6,6 @@ services:
     restart: unless-stopped
     container_name: kafka
     hostname: kafka
-    user: "0"
     ports:
       - "9092:9092"
     environment:
@@ -22,9 +21,9 @@ services:
       KAFKA_LISTENERS: 'INTERNAL://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://:9092'
       KAFKA_INTER_BROKER_LISTENER_NAME: 'INTERNAL'
       KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
-      KAFKA_LOG_DIRS: "/var/lib/kafka-data"
+      KAFKA_LOG_DIRS: "/var/lib/kafka/data"
     volumes:
-      - kafka_data:/var/lib/kafka-data:z
+      - kafka_data:/var/lib/kafka:z
   # https://docs.confluent.io/current/ksql/docs/installation/install-ksql-with-docker.html
   ksqldb:
     image: confluentinc/ksqldb-server:0.28.2
