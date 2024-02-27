@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   kafka:
-    image: apache/kafka:3.7.0-rc4
+    image: apache/kafka:3.7.0
     restart: unless-stopped
     container_name: kafka
     hostname: kafka
@@ -24,6 +24,7 @@ services:
       KAFKA_LOG_DIRS: "/var/lib/kafka/data"
     volumes:
       - kafka_data:/var/lib/kafka:z
+
   # https://docs.confluent.io/current/ksql/docs/installation/install-ksql-with-docker.html
   ksqldb:
     image: confluentinc/ksqldb-server:0.28.2
